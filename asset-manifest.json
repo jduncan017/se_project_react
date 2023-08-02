@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/se_project_react/static/css/main.ddd10cee.css",
-    "main.js": "/se_project_react/static/js/main.07a0a6b9.js",
+    "main.css": "/se_project_react/static/css/main.90408cac.css",
+    "main.js": "/se_project_react/static/js/main.9cb4e770.js",
     "static/js/787.79f92504.chunk.js": "/se_project_react/static/js/787.79f92504.chunk.js",
     "static/media/CabinetGrotesk-Bold.woff2": "/se_project_react/static/media/CabinetGrotesk-Bold.c9c3bc30c44ade9d3b9b.woff2",
     "static/media/CabinetGrotesk-Medium.woff2": "/se_project_react/static/media/CabinetGrotesk-Medium.467bcdaa2530ea758403.woff2",
@@ -11,12 +11,12 @@
     "static/media/close-icon.svg": "/se_project_react/static/media/close-icon.5041c8cbf1275be14ac1.svg",
     "index.html": "/se_project_react/index.html",
     "static/media/close-button-black.svg": "/se_project_react/static/media/close-button-black.bc0ea13b0794e3361877.svg",
-    "main.ddd10cee.css.map": "/se_project_react/static/css/main.ddd10cee.css.map",
-    "main.07a0a6b9.js.map": "/se_project_react/static/js/main.07a0a6b9.js.map",
+    "main.90408cac.css.map": "/se_project_react/static/css/main.90408cac.css.map",
+    "main.9cb4e770.js.map": "/se_project_react/static/js/main.9cb4e770.js.map",
     "787.79f92504.chunk.js.map": "/se_project_react/static/js/787.79f92504.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.ddd10cee.css",
-    "static/js/main.07a0a6b9.js"
+    "static/css/main.90408cac.css",
+    "static/js/main.9cb4e770.js"
   ]
 }

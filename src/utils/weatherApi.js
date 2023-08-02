@@ -1,11 +1,11 @@
 import { apiKey, locationData, images } from "./contants";
 
 function setTempCategory(temp) {
-  if (temp >= 86) {
+  if (temp >= 75) {
     return "hot";
-  } else if (temp >= 66 && temp <= 85) {
+  } else if (temp >= 55 && temp < 75) {
     return "warm";
-  } else if (temp <= 65) {
+  } else if (temp < 55) {
     return "cold";
   }
 }
@@ -63,14 +63,15 @@ function extractWeatherData(data) {
 }
 
 async function weatherApiRequest() {
-  try {
-    const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?lat=${locationData.latitude}&lon=${locationData.longitude}&units=imperial&appid=${apiKey}`
-    );
+  const response = await fetch(
+    `https://api.openweathermap.org/data/2.5/weather?lat=${locationData.latitude}&lon=${locationData.longitude}&units=imperial&appid=${apiKey}`
+  );
+
+  if (response.ok) {
     const data = await response.json();
     return extractWeatherData(data);
-  } catch (error) {
-    console.error("Error:", error);
+  } else {
+    throw new Error(`Error ${response.status}`);
   }
 }
 

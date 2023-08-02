@@ -1,19 +1,8 @@
-import React, { useEffect } from "react";
+import useEscape from "../../hooks/useEscape";
 import "./ItemModal.css";
 
 const ItemModal = ({ onClose, modalImage, weather }) => {
-  useEffect(() => {
-    function handleEscClose(event) {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    }
-    window.addEventListener("keydown", handleEscClose);
-
-    return () => {
-      window.removeEventListener("keydown", handleEscClose);
-    };
-  }, [onClose]);
+  useEscape(onClose);
 
   return (
     <div className="modal image-modal" id="image-modal">

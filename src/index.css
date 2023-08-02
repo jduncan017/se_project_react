@@ -2,7 +2,7 @@
 @import "./shared-styles/formModal.css";
 
 .page {
-  height: auto;
+  height: 100vh;
   padding: 0 40px;
   max-width: 1440px;
   margin: auto;

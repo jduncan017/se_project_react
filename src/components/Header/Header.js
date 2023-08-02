@@ -37,7 +37,10 @@ const Header = ({ handleClick, weatherData }) => {
           className={`header__add-clothes ${
             isMobileMenuOpened ? "header__add-clothes_visible" : ""
           }`}
-          onClick={handleClick}
+          onClick={() => {
+            handleClick();
+            setMobileMenuOpened(false);
+          }}
         >
           + Add Clothes
         </button>
@@ -63,9 +66,7 @@ const Header = ({ handleClick, weatherData }) => {
           })`,
         }}
         aria-label={isMobileMenuOpened ? "Close menu" : "Open menu"}
-      >
-        {/* <img alt="menu" /> */}
-      </button>
+      ></button>
     </header>
   );
 };

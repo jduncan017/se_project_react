@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Header from "../Header/Header";
 import WeatherCard from "../WeatherCard/WeatherCard";
 import Main from "../Main/Main";
@@ -21,29 +21,12 @@ function App() {
   const [modalImage, setModalImage] = useState({ src: "", name: "" });
   const [selectedItemWeather, setSelectedItemWeather] = useState("");
   const [clothingItems, setClothingItems] = useState([]);
+  const [cardsList, setCardsList] = useState([]);
   const [formInfo, setFormInfo] = useState({
     title: "",
     name: "",
     buttonText: "",
   });
-
-  /* --------------------------------------- */
-  /*               USE EFFECTS               */
-  /* --------------------------------------- */
-  // default clothing array:
-  useEffect(() => {
-    setClothingItems(defaultClothingItems);
-  }, []);
-
-  // fetch weather data:
-  useEffect(() => {
-    const fetchWeather = async () => {
-      const data = await weatherApiRequest();
-      setWeatherData(data);
-    };
-
-    fetchWeather();
-  }, []);
 
   /* --------------------------------------- */
   /*          FUNCTION DECLARATIONS          */
@@ -55,20 +38,72 @@ function App() {
   }
 
   //  modal open / close function (clothing image popup)
-  function toggleImageModal() {
+  const toggleImageModal = useCallback(() => {
     setImageModalOpen(!imageModalOpen);
+  }, [imageModalOpen]);
+
+  const handleCardClick = useCallback(
+    (item) => {
+      return () => {
+        setModalImage({
+          src: item.link,
+          name: item.name,
+        });
+        setSelectedItemWeather(item.weather);
+        toggleImageModal();
+      };
+    },
+    [toggleImageModal]
+  );
+
+  function filterClothes(clothingItems, weatherData) {
+    return clothingItems.filter((items) => {
+      return items.weather === weatherData.tempCategory;
+    });
   }
 
-  function handleCardClick(item) {
-    return () => {
-      setModalImage({
-        src: item.link,
-        name: item.name,
+  const renderCardList = useCallback(
+    (clothingItems) => {
+      return clothingItems.map((items) => {
+        return (
+          <ItemCard
+            handleClick={handleCardClick(items)}
+            key={items._id}
+            clothingItem={items}
+          />
+        );
       });
-      setSelectedItemWeather(item.weather);
-      toggleImageModal();
+    },
+    [handleCardClick]
+  );
+
+  /* --------------------------------------- */
+  /*               USE EFFECTS               */
+  /* --------------------------------------- */
+  // fetch weather data:
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        const data = await weatherApiRequest();
+        setWeatherData(data);
+      } catch (error) {
+        console.error(error);
+      }
     };
-  }
+
+    fetchWeather();
+  }, []);
+
+  // update appropriate clothing for weather:
+  useEffect(() => {
+    const appropriateClothes = filterClothes(defaultClothingItems, weatherData);
+    setClothingItems(appropriateClothes);
+  }, [weatherData]);
+
+  // useEffect to update cardsList whenever clothingItems changes
+  useEffect(() => {
+    setCardsList(renderCardList(clothingItems));
+  }, [clothingItems, renderCardList]);
 
   /* --------------------------------------- */
   /*               HTML RETURN               */
@@ -90,15 +125,7 @@ function App() {
         weatherCard={<WeatherCard weatherData={weatherData} />}
         weatherData={weatherData}
         // CARDS LIST:
-        itemCard={clothingItems.map((item) => {
-          return (
-            <ItemCard
-              handleClick={handleCardClick(item)}
-              key={item._id}
-              clothingItem={item}
-            />
-          );
-        })}
+        cardsList={cardsList}
       />
 
       {/* MODAL WITH FORM: */}

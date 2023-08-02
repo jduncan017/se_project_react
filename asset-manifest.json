@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/se_project_react/static/css/main.e002c53d.css",
+    "main.js": "/se_project_react/static/js/main.51e6a64c.js",
+    "static/js/787.79f92504.chunk.js": "/se_project_react/static/js/787.79f92504.chunk.js",
+    "static/media/CabinetGrotesk-Bold.woff2": "/se_project_react/static/media/CabinetGrotesk-Bold.c9c3bc30c44ade9d3b9b.woff2",
+    "static/media/CabinetGrotesk-Medium.woff2": "/se_project_react/static/media/CabinetGrotesk-Medium.467bcdaa2530ea758403.woff2",
+    "static/media/night_fog.png": "/se_project_react/static/media/night_fog.b76c9ef2a50662339f47.png",
+    "static/media/day_fog.png": "/se_project_react/static/media/day_fog.6c3c0d1bb2568abe9262.png",
+    "static/media/Logo.svg": "/se_project_react/static/media/Logo.2e52a3b54443b649938df0a9b3d231e2.svg",
+    "static/media/close-icon.svg": "/se_project_react/static/media/close-icon.5041c8cbf1275be14ac1.svg",
+    "index.html": "/se_project_react/index.html",
+    "static/media/close-button-black.svg": "/se_project_react/static/media/close-button-black.bc0ea13b0794e3361877.svg",
+    "main.e002c53d.css.map": "/se_project_react/static/css/main.e002c53d.css.map",
+    "main.51e6a64c.js.map": "/se_project_react/static/js/main.51e6a64c.js.map",
+    "787.79f92504.chunk.js.map": "/se_project_react/static/js/787.79f92504.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e002c53d.css",
+    "static/js/main.51e6a64c.js"
+  ]
+}

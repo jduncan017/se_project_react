@@ -1,7 +1,7 @@
 {
   "name": "se_project_react",
   "version": "0.1.0",
-  "homepage": "https://jduncan017.github.io/se_project_react"
+  "homepage": "https://jduncan017.github.io/se_project_react",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",

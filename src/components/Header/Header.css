@@ -89,7 +89,6 @@
     background-color: white;
     position: absolute;
     z-index: 1;
-    transition: width 0.5s, height 0.5s, opacity 1s;
   }
 
   .header__navigation-container_opened {
@@ -99,7 +98,7 @@
     right: 16px;
     width: 90vw;
     height: 208px;
-    transition: width 0.5s, height 0.5s;
+    transition: width 0.1s, height 0.3s;
   }
 
   .header__mobile-menu {
@@ -123,7 +122,6 @@
     display: flex;
     align-items: center;
     align-self: center;
-    transition: opacity 0.1s;
   }
 
   .header__user-info-container_opened {
@@ -133,7 +131,6 @@
 
   .header__add-clothes {
     opacity: 0;
-    transition: opacity 0.1s;
   }
 
   .header__add-clothes_visible {

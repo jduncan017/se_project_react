@@ -1,0 +1,70 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1360px;
+  height: 40px;
+  margin: auto;
+  padding: 32px 0 28px;
+  color: #000;
+  font-family: "Cabinet Grotesk Bold", Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  line-height: 24px;
+}
+
+.header__title-container {
+  display: flex;
+  align-items: center;
+}
+
+.header__logo {
+  width: 89px;
+  height: 40px;
+  margin-right: 24px;
+}
+
+.header__navigation-container {
+  display: flex;
+  align-items: center;
+}
+
+.header__add-clothes {
+  border: none;
+  background-color: rgb(0, 0, 0, 0);
+  color: #000;
+  font-family: "Cabinet Grotesk Bold", Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  line-height: 24px;
+  margin-right: 20px;
+}
+
+.header__add-clothes:hover {
+  cursor: pointer;
+}
+
+.header__username {
+  margin-right: 12px;
+}
+
+.header__avatar {
+  width: 40px;
+  height: 40px;
+}
+
+@media screen and (min-width: 320px) and (max-width: 650px) {
+  .header {
+    height: auto;
+  }
+
+  .header__title-container {
+    flex-direction: column;
+    align-items: baseline;
+  }
+
+  .header__date-location {
+    margin-top: 32px;
+  }
+
+  .header__navigation-container {
+    display: none;
+  }
+}

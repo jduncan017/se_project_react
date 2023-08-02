@@ -1,0 +1,35 @@
+.image-modal__container {
+  width: 498px;
+  height: 610px;
+  position: relative;
+  background: rgb(255, 255, 255);
+  border-radius: 16px;
+  margin: auto;
+}
+
+.image-modal__image {
+  width: 100%;
+  object-fit: contain;
+  border-radius: 16px 16px 0 0;
+}
+
+.image-modal__title {
+  margin: 16px 0 0 32px;
+  font-family: "Cabinet Grotesk Bold", Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  line-height: 24px;
+}
+
+.image-modal__description {
+  margin: 12px 0 0 32px;
+  font-family: "Cabinet Grotesk Bold", Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  line-height: 24px;
+}
+
+@media screen and (min-width: 320px) and (max-width: 510px) {
+  .image-modal__container {
+    width: 343px;
+    height: 463px;
+  }
+}

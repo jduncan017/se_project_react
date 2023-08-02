@@ -1,0 +1,47 @@
+.form-modal__form-label {
+  color: #000;
+  font-family: "Cabinet Grotesk Bold", Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  align-self: start;
+  margin-bottom: 8px;
+}
+
+.form-modal__form-input {
+  display: block;
+  width: 100%;
+  padding: 0 0 4px;
+  border: none;
+  border-bottom: solid 1px black;
+  font-family: "Cabinet Grotesk Bold", Arial, Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  color: #000000;
+  height: 20px;
+}
+
+.form-modal__input-invalid {
+  border-color: #ff0000;
+}
+
+.form-modal__error {
+  font-family: "Cabinet Grotesk Bold", Arial, Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 12px;
+  height: 16px;
+  color: #ff0000;
+  align-self: flex-start;
+  margin: 5px 0 3px;
+  visibility: hidden;
+}
+
+.form-modal__error_visible {
+  visibility: visible;
+}
+
+@media screen and (min-width: 320px) and (max-width: 510px) {
+  .form-modal__form {
+    width: 343px;
+    margin: 0 16px 32px;
+  }
+}

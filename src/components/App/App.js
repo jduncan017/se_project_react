@@ -6,7 +6,7 @@ import Main from "../Main/Main";
 import ItemCard from "../ItemCard/ItemCard";
 import Footer from "../Footer/Footer";
 import ItemModal from "../ItemModal/ItemModal";
-import TempToggle from "../TempToggle/TempToggle";
+import ToggleSwitch from "../ToggleSwitch/ToggleSwitch";
 import weatherApiRequest from "../../utils/weatherApi";
 import Profile from "../Profile/Profile";
 import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
@@ -171,7 +171,7 @@ function App() {
           handleClick={() =>
             toggleAddModal("New Garment", "add-clothes", "Add garment")
           }
-          tempToggle={<TempToggle />}
+          ToggleSwitch={<ToggleSwitch />}
           weatherData={weatherData}
         />
 

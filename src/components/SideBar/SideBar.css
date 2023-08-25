@@ -1,0 +1,60 @@
+.sidebar {
+  position: relative;
+  font-family: "Cabinet Grotesk Bold", Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  line-height: 24.8px;
+  color: black;
+  width: 325px;
+}
+
+.sidebar::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.1),
+    rgba(0, 0, 0, 0.3) 50%,
+    rgba(0, 0, 0, 0.1)
+  );
+}
+
+.sidebar__user-info {
+  display: flex;
+  align-items: center;
+}
+
+.sidebar__user-avatar {
+  width: 56px;
+  height: 56px;
+  margin-right: 16px;
+}
+
+.sidebar__username {
+  margin-right: 12px;
+}
+
+@media screen and (min-width: 320px) and (max-width: 700px) {
+  .sidebar {
+    width: auto;
+  }
+
+  .sidebar::after {
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    width: auto;
+    transform: translateY(15px);
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.1),
+      rgba(0, 0, 0, 0.3) 50%,
+      rgba(0, 0, 0, 0.1)
+    );
+  }
+}

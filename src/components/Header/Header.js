@@ -14,7 +14,7 @@ function getCurrentDate() {
   return currentDate;
 }
 
-const Header = ({ handleClick, tempToggle, weatherData }) => {
+const Header = ({ handleClick, ToggleSwitch, weatherData }) => {
   const [isMobileMenuOpened, setMobileMenuOpened] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -36,7 +36,7 @@ const Header = ({ handleClick, tempToggle, weatherData }) => {
           isMobileMenuOpened ? "header__navigation-container_opened" : ""
         }`}
       >
-        {tempToggle}
+        {ToggleSwitch}
         <button
           className={`header__add-clothes ${
             isMobileMenuOpened ? "header__add-clothes_visible" : ""

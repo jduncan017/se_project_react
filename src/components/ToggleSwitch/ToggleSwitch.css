@@ -1,11 +1,11 @@
-.temp-toggle {
+.toggle-switch {
   height: 0;
   width: 0;
   visibility: hidden;
   background-color: #000;
 }
 
-.temp-toggle__switch {
+.toggle-switch__switch {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -19,11 +19,11 @@
   transition: border 0.3s;
 }
 
-.temp-toggle__switch:hover {
+.toggle-switch__switch:hover {
   border: solid 2px #000;
 }
 
-.temp-toggle__switch .temp-toggle__slider {
+.toggle-switch__switch .toggle-switch__slider {
   position: absolute;
   top: 0;
   left: 0;
@@ -35,12 +35,12 @@
   box-shadow: 0 0 2px 0 rgba(10, 10, 10, 0.29);
 }
 
-.temp-toggle:checked + .temp-toggle__switch .temp-toggle__slider {
+.toggle-switch:checked + .toggle-switch__switch .toggle-switch__slider {
   left: calc(100%);
   transform: translateX(-100%);
 }
 
-.temp-toggle__text {
+.toggle-switch__text {
   position: absolute;
   font-family: "Cabinet Grotesk Bold", Arial, Helvetica, sans-serif;
   font-size: 14px;
@@ -50,12 +50,12 @@
   z-index: 1;
 }
 
-.temp-toggle__text_farenheit {
+.toggle-switch__text_farenheit {
   padding-left: 10px;
   top: 25%;
 }
 
-.temp-toggle__text_celsius {
+.toggle-switch__text_celsius {
   padding-right: 8px;
   top: 25%;
   right: 0;

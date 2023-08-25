@@ -11,7 +11,7 @@ import weatherApiRequest from "../../utils/weatherApi";
 import Profile from "../Profile/Profile";
 import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
 import AddItemModal from "../AddItemModal/AddItemModal";
-import { CurrentTemperatureUnitProvider } from "../../contexts/CurrentTemperatureUnitContext";
+import { CurrentTemperatureUnitContext } from "../../contexts/CurrentTemperatureUnitContext";
 import api from "../../utils/api";
 import "./App.css";
 
@@ -27,6 +27,8 @@ function App() {
 
   // weather states
   const [weatherData, setWeatherData] = useState({ name: "", temp: "" });
+  const [currentTemperatureUnit, setCurrentTemperatureUnit] =
+    React.useState("F");
 
   // clothing item states
   const [allClothesList, setAllClothesList] = useState([]);
@@ -165,7 +167,9 @@ function App() {
 
   return (
     <div className="page">
-      <CurrentTemperatureUnitProvider>
+      <CurrentTemperatureUnitContext.Provider
+        value={{ currentTemperatureUnit, setCurrentTemperatureUnit }}
+      >
         {/* HEADER */}
         <Header
           handleClick={() =>
@@ -224,7 +228,7 @@ function App() {
 
         {/* FOOTER */}
         <Footer />
-      </CurrentTemperatureUnitProvider>
+      </CurrentTemperatureUnitContext.Provider>
     </div>
   );
 }

@@ -1,0 +1,62 @@
+.temp-toggle {
+  height: 0;
+  width: 0;
+  visibility: hidden;
+  background-color: #000;
+}
+
+.temp-toggle__switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  width: 56px;
+  height: 28px;
+  background: rgb(255, 255, 255);
+  border-radius: 28px;
+  border: solid 2px #7e7e7e;
+  position: relative;
+  transition: border 0.3s;
+}
+
+.temp-toggle__switch:hover {
+  border: solid 2px #000;
+}
+
+.temp-toggle__switch .temp-toggle__slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 28px;
+  transition: 0.2s;
+  background: #000;
+  box-shadow: 0 0 2px 0 rgba(10, 10, 10, 0.29);
+}
+
+.temp-toggle:checked + .temp-toggle__switch .temp-toggle__slider {
+  left: calc(100%);
+  transform: translateX(-100%);
+}
+
+.temp-toggle__text {
+  position: absolute;
+  font-family: "Cabinet Grotesk Bold", Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 17.36px;
+  color: rgba(255, 255, 255, 0.8);
+  mix-blend-mode: difference;
+  z-index: 1;
+}
+
+.temp-toggle__text_farenheit {
+  padding-left: 10px;
+  top: 25%;
+}
+
+.temp-toggle__text_celsius {
+  padding-right: 8px;
+  top: 25%;
+  right: 0;
+}

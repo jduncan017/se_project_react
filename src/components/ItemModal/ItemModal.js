@@ -1,7 +1,7 @@
 import useEscape from "../../hooks/useEscape";
 import "./ItemModal.css";
 
-const ItemModal = ({ onClose, modalImage, weather }) => {
+const ItemModal = ({ onClose, selectedItem, confirmDelete }) => {
   useEscape(onClose);
 
   return (
@@ -10,11 +10,23 @@ const ItemModal = ({ onClose, modalImage, weather }) => {
       <div className="image-modal__container">
         <img
           className="image-modal__image"
-          alt={modalImage.name}
-          src={modalImage.src}
+          alt={selectedItem.name}
+          src={selectedItem.imageUrl}
         />
-        <h2 className="image-modal__title">{modalImage.name}</h2>
-        <h2 className="image-modal__description">{`Weather: ${weather}`}</h2>
+        <div className="image-modal__title-wrapper">
+          <h2 className="image-modal__title">{selectedItem.name}</h2>
+          <button
+            type="button"
+            className="image-modal__delete"
+            onClick={() => {
+              onClose();
+              confirmDelete();
+            }}
+          >
+            Delete item
+          </button>
+        </div>
+        <h2 className="image-modal__description">{`Weather: ${selectedItem.weather}`}</h2>
         <button
           className="modal__close-button"
           type="button"

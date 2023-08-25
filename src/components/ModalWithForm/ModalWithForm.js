@@ -1,7 +1,7 @@
 import useEscape from "../../hooks/useEscape";
 import "./ModalWithForm.css";
 
-const ModalWithForm = ({ onClose, formInfo, children }) => {
+const ModalWithForm = ({ onClose, formInfo, children, handleSubmit }) => {
   useEscape(onClose);
 
   return (
@@ -17,12 +17,13 @@ const ModalWithForm = ({ onClose, formInfo, children }) => {
         <form
           className="modal-with-form__inputs-container"
           name={`${formInfo.name}-form`}
+          onSubmit={handleSubmit}
         >
           {children}
           <button
             className="modal-with-form__submit-button"
             type="submit"
-            disabled
+            // disabled
           >
             {formInfo.buttonText}
           </button>

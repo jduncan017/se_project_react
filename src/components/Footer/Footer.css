@@ -1,7 +1,6 @@
 .footer__container {
   display: flex;
   justify-content: space-between;
-  max-width: 1360px;
   margin: auto;
   padding: 171px 0 24px;
   color: #000;
@@ -21,7 +20,7 @@
   line-height: 20px;
 }
 
-@media screen and (min-width: 320px) and (max-width: 510px) {
+@media screen and (min-width: 320px) and (max-width: 627px) {
   .footer__container {
     padding: 83px 0 24px;
   }

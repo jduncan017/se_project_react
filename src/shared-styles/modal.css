@@ -36,7 +36,7 @@
   opacity: 0.6;
 }
 
-@media screen and (min-width: 320px) and (max-width: 510px) {
+@media screen and (min-width: 320px) and (max-width: 515px) {
   .modal__close-button {
     height: 21.2px;
     width: 21.2px;

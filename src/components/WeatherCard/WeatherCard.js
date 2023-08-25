@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./WeatherCard.css";
+import { CurrentTemperatureUnitContext } from "../../contexts/CurrentTemperatureUnitContext";
 
 const WeatherCard = ({ weatherData }) => {
+  const { currentTemperatureUnit } = useContext(CurrentTemperatureUnitContext);
+  const temperature = weatherData.temp[currentTemperatureUnit];
+
   if (!weatherData) {
     return <p>Loading...</p>;
   }
@@ -11,9 +15,9 @@ const WeatherCard = ({ weatherData }) => {
       className="weather__card"
       style={{ backgroundImage: `url(${weatherData.weatherImagePath})` }}
     >
-      <h1 className="weather__card-temperature">{`${Math.round(
-        weatherData.temp
-      )}°F`}</h1>
+      <h1 className="weather__card-temperature">
+        {temperature}°{currentTemperatureUnit}
+      </h1>
     </div>
   );
 };

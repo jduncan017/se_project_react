@@ -1,39 +1,45 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { Route } from "react-router-dom";
 import Header from "../Header/Header";
 import WeatherCard from "../WeatherCard/WeatherCard";
 import Main from "../Main/Main";
 import ItemCard from "../ItemCard/ItemCard";
 import Footer from "../Footer/Footer";
-import ModalWithForm from "../ModalWithForm/ModalWithForm";
-import AddClothesForm from "../AddClothesForm/AddClothesForm";
 import ItemModal from "../ItemModal/ItemModal";
+import TempToggle from "../TempToggle/TempToggle";
 import weatherApiRequest from "../../utils/weatherApi";
+import Profile from "../Profile/Profile";
+import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
+import AddItemModal from "../AddItemModal/AddItemModal";
 import { defaultClothingItems } from "../../utils/contants";
+import { CurrentTemperatureUnitProvider } from "../../contexts/CurrentTemperatureUnitContext";
+import api from "../../utils/api";
 import "./App.css";
+import { v4 as uuidv4 } from "uuid";
 
 function App() {
   /* --------------------------------------- */
   /*           STATE DECLARATIONS            */
   /* --------------------------------------- */
-  const [weatherData, setWeatherData] = useState({ name: "", temp: "" });
+  // modal states:
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [imageModalOpen, setImageModalOpen] = useState(false);
-  const [modalImage, setModalImage] = useState({ src: "", name: "" });
-  const [selectedItemWeather, setSelectedItemWeather] = useState("");
-  const [clothingItems, setClothingItems] = useState([]);
-  const [cardsList, setCardsList] = useState([]);
-  const [formInfo, setFormInfo] = useState({
-    title: "",
-    name: "",
-    buttonText: "",
-  });
+  const [ConfirmationModalOpen, setConfirmationModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState({ src: "", name: "" });
+
+  // weather states
+  const [weatherData, setWeatherData] = useState({ name: "", temp: "" });
+
+  // clothing item states
+  const [allClothesList, setAllClothesList] = useState(defaultClothingItems);
+  const [allClothingCards, setAllClothingCards] = useState([]);
+  const [appropriateClothingCards, setAppropriateClothingCards] = useState([]);
 
   /* --------------------------------------- */
   /*          FUNCTION DECLARATIONS          */
   /* --------------------------------------- */
   // modal open / close function (add clothes)
-  function toggleAddModal(title, name, buttonText) {
-    setFormInfo({ title: title, name: name, buttonText: buttonText });
+  function toggleAddModal() {
     setAddModalOpen(!addModalOpen);
   }
 
@@ -42,23 +48,24 @@ function App() {
     setImageModalOpen(!imageModalOpen);
   }, [imageModalOpen]);
 
+  // modal open / close function (confirmation Modal)
+  function toggleConfirmationModal() {
+    setConfirmationModalOpen(!ConfirmationModalOpen);
+  }
+
   const handleCardClick = useCallback(
     (item) => {
       return () => {
-        setModalImage({
-          src: item.link,
-          name: item.name,
-        });
-        setSelectedItemWeather(item.weather);
+        setSelectedItem(item);
         toggleImageModal();
       };
     },
     [toggleImageModal]
   );
 
-  function filterClothes(clothingItems, weatherData) {
-    return clothingItems.filter((items) => {
-      return items.weather === weatherData.tempCategory;
+  function filterCards(clothingCards, weatherData) {
+    return clothingCards.filter((card) => {
+      return card.props.clothingItem.weather === weatherData.tempCategory;
     });
   }
 
@@ -77,6 +84,21 @@ function App() {
     [handleCardClick]
   );
 
+  function handleAddItemSubmit(newItem) {
+    const newItemWithId = {
+      ...newItem,
+      _id: uuidv4(),
+    };
+    setAllClothesList([...allClothesList, newItemWithId]);
+  }
+
+  function handleDeleteItemConfirm(item) {
+    const filteredList = allClothesList.filter((items) => {
+      return items._id !== item._id;
+    });
+    setAllClothesList(filteredList);
+  }
+
   /* --------------------------------------- */
   /*               USE EFFECTS               */
   /* --------------------------------------- */
@@ -90,20 +112,19 @@ function App() {
         console.error(error);
       }
     };
-
     fetchWeather();
   }, []);
 
   // update appropriate clothing for weather:
   useEffect(() => {
-    const appropriateClothes = filterClothes(defaultClothingItems, weatherData);
-    setClothingItems(appropriateClothes);
-  }, [weatherData]);
+    setAppropriateClothingCards(filterCards(allClothingCards, weatherData));
+  }, [allClothingCards, weatherData]);
 
-  // useEffect to update cardsList whenever clothingItems changes
+  // useEffect to update allClothingItems, setAllClothingItems List
+  // Note: this will need updated to work with api data!
   useEffect(() => {
-    setCardsList(renderCardList(clothingItems));
-  }, [clothingItems, renderCardList]);
+    setAllClothingCards(renderCardList(allClothesList));
+  }, [renderCardList, allClothesList]);
 
   /* --------------------------------------- */
   /*               HTML RETURN               */
@@ -111,41 +132,66 @@ function App() {
 
   return (
     <div className="page">
-      {/* HEADER */}
-      <Header
-        handleClick={() =>
-          toggleAddModal("New Garment", "add-clothes", "Add garment")
-        }
-        weatherData={weatherData}
-      />
-
-      {/* MAIN */}
-      <Main
-        // WEATHER CARD:
-        weatherCard={<WeatherCard weatherData={weatherData} />}
-        weatherData={weatherData}
-        // CARDS LIST:
-        cardsList={cardsList}
-      />
-
-      {/* MODAL WITH FORM: */}
-      {addModalOpen && (
-        <ModalWithForm onClose={toggleAddModal} formInfo={formInfo}>
-          <AddClothesForm />
-        </ModalWithForm>
-      )}
-
-      {/* MODAL FOR DISPLAYING CARD INFO */}
-      {imageModalOpen && (
-        <ItemModal
-          onClose={toggleImageModal}
-          modalImage={modalImage}
-          weather={selectedItemWeather}
+      <CurrentTemperatureUnitProvider>
+        {/* HEADER */}
+        <Header
+          handleClick={() =>
+            toggleAddModal("New Garment", "add-clothes", "Add garment")
+          }
+          tempToggle={<TempToggle />}
+          weatherData={weatherData}
         />
-      )}
 
-      {/* FOOTER */}
-      <Footer />
+        {/* MAIN */}
+        <Route exact path="/">
+          <Main
+            // WEATHER CARD:
+            weatherCard={<WeatherCard weatherData={weatherData} />}
+            weatherData={weatherData}
+            // CARDS LIST:
+            cardsList={appropriateClothingCards}
+          />
+        </Route>
+        <Route path="/profile">
+          <Profile
+            // CARDS LIST:
+            cardsList={allClothingCards}
+            handleClick={() =>
+              toggleAddModal("New Garment", "add-clothes", "Add garment")
+            }
+          />
+        </Route>
+
+        {/* MODAL WITH FORM: */}
+        {addModalOpen && (
+          <AddItemModal
+            onClose={toggleAddModal}
+            isOpen={addModalOpen}
+            handleAddItems={handleAddItemSubmit}
+          />
+        )}
+
+        {/* MODAL FOR DISPLAYING CARD INFO */}
+        {imageModalOpen && (
+          <ItemModal
+            onClose={toggleImageModal}
+            selectedItem={selectedItem}
+            confirmDelete={toggleConfirmationModal}
+          />
+        )}
+
+        {/* MODAL FOR CONFIRMING CLOTHING DELETION */}
+        {ConfirmationModalOpen && (
+          <ConfirmationModal
+            onClose={toggleConfirmationModal}
+            handleDelete={handleDeleteItemConfirm}
+            selectedItem={selectedItem}
+          />
+        )}
+
+        {/* FOOTER */}
+        <Footer />
+      </CurrentTemperatureUnitProvider>
     </div>
   );
 }

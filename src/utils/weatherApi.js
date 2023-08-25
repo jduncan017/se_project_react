@@ -1,11 +1,11 @@
 import { apiKey, locationData, images } from "./contants";
 
-function setTempCategory(temp) {
-  if (temp >= 75) {
+function setTempCategory(tempFarenheit) {
+  if (tempFarenheit >= 75) {
     return "hot";
-  } else if (temp >= 55 && temp < 75) {
+  } else if (tempFarenheit >= 55 && tempFarenheit < 75) {
     return "warm";
-  } else if (temp < 55) {
+  } else if (tempFarenheit < 55) {
     return "cold";
   }
 }
@@ -49,8 +49,14 @@ function getTimeOfDay(data) {
 
 function extractWeatherData(data) {
   const location = data ? data.name : "null";
-  const temp = data && data.main ? data.main.temp : "null";
-  const tempCategory = setTempCategory(temp);
+  const temp =
+    data && data.main
+      ? {
+          F: Math.round(data.main.temp),
+          C: Math.round(((data.main.temp - 32) * 5) / 9),
+        }
+      : "null";
+  const tempCategory = setTempCategory(temp.F);
   const weather = getWeather(data.weather[0].main);
   const dayOrNight = getTimeOfDay(data);
   const weatherImagePath = `${dayOrNight}_${weather}`;

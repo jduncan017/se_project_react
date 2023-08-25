@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Route } from "react-router-dom";
 import Header from "../Header/Header";
-import WeatherCard from "../WeatherCard/WeatherCard";
 import Main from "../Main/Main";
 import ItemCard from "../ItemCard/ItemCard";
 import Footer from "../Footer/Footer";
@@ -186,8 +185,6 @@ function App() {
         {/* MAIN */}
         <Route exact path="/">
           <Main
-            // WEATHER CARD:
-            weatherCard={<WeatherCard weatherData={weatherData} />}
             weatherData={weatherData}
             // CARDS LIST:
             cardsList={appropriateClothingCards}

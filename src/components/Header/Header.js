@@ -5,6 +5,7 @@ import logoPath from "../../images/Logo.svg";
 import avatar from "../../images/Avatar.svg";
 import openMenuIcon from "../../images/hamburger-icon.png";
 import closeMenuIcon from "../../images/close-icon-black.png";
+import ToggleSwitch from "../ToggleSwitch/ToggleSwitch";
 
 function getCurrentDate() {
   const currentDate = new Date().toLocaleString("default", {
@@ -14,7 +15,7 @@ function getCurrentDate() {
   return currentDate;
 }
 
-const Header = ({ handleClick, ToggleSwitch, weatherData }) => {
+const Header = ({ handleClick, weatherData }) => {
   const [isMobileMenuOpened, setMobileMenuOpened] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -36,7 +37,7 @@ const Header = ({ handleClick, ToggleSwitch, weatherData }) => {
           isMobileMenuOpened ? "header__navigation-container_opened" : ""
         }`}
       >
-        {ToggleSwitch}
+        <ToggleSwitch />
         <button
           className={`header__add-clothes ${
             isMobileMenuOpened ? "header__add-clothes_visible" : ""

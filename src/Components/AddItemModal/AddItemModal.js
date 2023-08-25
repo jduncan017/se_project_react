@@ -1,6 +1,7 @@
 import "./AddItemModal.css";
 import ModalWithForm from "../ModalWithForm/ModalWithForm";
 import { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 const AddItemModal = ({ onClose, isOpen, handleAddItems }) => {
   const [formState, setFormState] = useState({
@@ -27,7 +28,8 @@ const AddItemModal = ({ onClose, isOpen, handleAddItems }) => {
 
   function handleSubmit(e) {
     e.preventDefault();
-    handleAddItems(formState);
+    const newItem = { ...formState, _id: uuidv4() };
+    handleAddItems(newItem);
     onClose();
   }
 

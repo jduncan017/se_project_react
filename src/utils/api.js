@@ -1,19 +1,36 @@
-const api = async (method, data = null, id = null) => {
-  const baseUrl = "http://localhost:3001";
+const api = async (method, data = null, _id = null) => {
+  const baseUrl =
+    // "https://my-json-server.typicode.com/jduncan017/se_project_react";
+    "http://localhost:3001";
+  let options;
 
-  const options = {
-    method: method,
-    headers: method === "POST" ? { "Content-Type": "application/json" } : {},
-    body: method === "POST" ? JSON.stringify(data) : null,
-  };
-
-  let url = `${baseUrl}/items`;
-  if (method === "DELETE" && id) {
-    url += `/${id}`;
+  switch (method) {
+    case "POST":
+      options = {
+        method: "POST",
+        url: `${baseUrl}/items`,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      };
+      break;
+    case "DELETE":
+      options = {
+        method: "DELETE",
+        url: `${baseUrl}/items/${_id}`,
+      };
+      break;
+    case "GET":
+      options = {
+        method: "GET",
+        url: `${baseUrl}/items`,
+      };
+      break;
+    default:
+      throw new Error(`Method not supported: ${method}`);
   }
 
   try {
-    const res = await fetch(url, options);
+    const res = await fetch(options.url, options);
 
     if (!res.ok) {
       throw new Error(`Oops there's an error!: ${res.status}`);

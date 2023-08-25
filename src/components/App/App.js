@@ -11,11 +11,9 @@ import weatherApiRequest from "../../utils/weatherApi";
 import Profile from "../Profile/Profile";
 import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
 import AddItemModal from "../AddItemModal/AddItemModal";
-import { defaultClothingItems } from "../../utils/contants";
 import { CurrentTemperatureUnitProvider } from "../../contexts/CurrentTemperatureUnitContext";
 import api from "../../utils/api";
 import "./App.css";
-import { v4 as uuidv4 } from "uuid";
 
 function App() {
   /* --------------------------------------- */
@@ -31,13 +29,23 @@ function App() {
   const [weatherData, setWeatherData] = useState({ name: "", temp: "" });
 
   // clothing item states
-  const [allClothesList, setAllClothesList] = useState(defaultClothingItems);
+  const [allClothesList, setAllClothesList] = useState([]);
   const [allClothingCards, setAllClothingCards] = useState([]);
   const [appropriateClothingCards, setAppropriateClothingCards] = useState([]);
 
   /* --------------------------------------- */
   /*          FUNCTION DECLARATIONS          */
   /* --------------------------------------- */
+  // fetch user clothing items:
+  const fetchUserClothes = async () => {
+    try {
+      const clothesList = await api("GET");
+      setAllClothesList(clothesList);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   // modal open / close function (add clothes)
   function toggleAddModal() {
     setAddModalOpen(!addModalOpen);
@@ -84,12 +92,31 @@ function App() {
     [handleCardClick]
   );
 
-  function handleAddItemSubmit(newItem) {
-    const newItemWithId = {
-      ...newItem,
-      _id: uuidv4(),
+  const addItemApi = async (newItem) => {
+    const postItem = async () => {
+      try {
+        return await api("POST", newItem);
+      } catch (error) {
+        console.error(error);
+      }
     };
-    setAllClothesList([...allClothesList, newItemWithId]);
+    postItem();
+  };
+
+  const deleteItemApi = async (item) => {
+    const deleteItem = async () => {
+      try {
+        return await api("DELETE", item, item._id);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    deleteItem();
+  };
+
+  function handleAddItemSubmit(newItem) {
+    setAllClothesList([...allClothesList, newItem]);
+    addItemApi(newItem);
   }
 
   function handleDeleteItemConfirm(item) {
@@ -97,11 +124,17 @@ function App() {
       return items._id !== item._id;
     });
     setAllClothesList(filteredList);
+    deleteItemApi(item);
   }
 
   /* --------------------------------------- */
   /*               USE EFFECTS               */
   /* --------------------------------------- */
+  // initial fetch of user clothes:
+  useEffect(() => {
+    fetchUserClothes();
+  }, []);
+
   // fetch weather data:
   useEffect(() => {
     const fetchWeather = async () => {

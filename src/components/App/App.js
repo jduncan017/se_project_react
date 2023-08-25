@@ -79,6 +79,10 @@ function App() {
     });
   }
 
+  function handleToggleSwitchChange() {
+    setCurrentTemperatureUnit(currentTemperatureUnit === "F" ? "C" : "F");
+  }
+
   const renderCardList = useCallback(
     (clothingItems) => {
       return clothingItems.map((items) => {
@@ -168,7 +172,7 @@ function App() {
   return (
     <div className="page">
       <CurrentTemperatureUnitContext.Provider
-        value={{ currentTemperatureUnit, setCurrentTemperatureUnit }}
+        value={{ currentTemperatureUnit, handleToggleSwitchChange }}
       >
         {/* HEADER */}
         <Header

@@ -16,7 +16,7 @@ import "./App.css";
 
 function App() {
   /* --------------------------------------- */
-  /*           STATE DECLARATIONS            */
+  /*          STATE DECLARATIONS             */
   /* --------------------------------------- */
   // modal states:
   const [addModalOpen, setAddModalOpen] = useState(false);
@@ -32,7 +32,6 @@ function App() {
   // clothing item states
   const [allClothesList, setAllClothesList] = useState([]);
   const [allClothingCards, setAllClothingCards] = useState([]);
-  const [appropriateClothingCards, setAppropriateClothingCards] = useState([]);
 
   /* --------------------------------------- */
   /*          FUNCTION DECLARATIONS          */
@@ -71,12 +70,6 @@ function App() {
     },
     [toggleImageModal]
   );
-
-  function filterCards(clothingCards, weatherData) {
-    return clothingCards.filter((card) => {
-      return card.props.clothingItem.weather === weatherData.tempCategory;
-    });
-  }
 
   function handleToggleSwitchChange() {
     setCurrentTemperatureUnit(currentTemperatureUnit === "F" ? "C" : "F");
@@ -153,11 +146,6 @@ function App() {
     fetchWeather();
   }, []);
 
-  // update appropriate clothing for weather:
-  useEffect(() => {
-    setAppropriateClothingCards(filterCards(allClothingCards, weatherData));
-  }, [allClothingCards, weatherData]);
-
   // useEffect to update allClothingItems, setAllClothingItems List
   // Note: this will need updated to work with api data!
   useEffect(() => {
@@ -186,8 +174,9 @@ function App() {
         <Route exact path="/">
           <Main
             weatherData={weatherData}
+            allClothesList={allClothesList}
             // CARDS LIST:
-            cardsList={appropriateClothingCards}
+            handleCardClick={handleCardClick}
           />
         </Route>
         <Route path="/profile">

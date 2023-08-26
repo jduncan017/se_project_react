@@ -1,4 +1,3 @@
-import React from "react";
 import "./ClothesSection.css";
 
 const ClothesSection = ({ cardsList, handleClick }) => {

@@ -29,7 +29,7 @@ const Header = ({ handleClick, weatherData }) => {
           <img src={logoPath} alt="wtwr Logo" className="header__logo" />
         </Link>
         <div className="header__date-location">
-          {`${getCurrentDate()}, ${weatherData.location}`}{" "}
+          {`${getCurrentDate()}, ${weatherData.location}`}
         </div>
       </div>
       <div

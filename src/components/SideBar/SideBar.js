@@ -1,4 +1,3 @@
-import React from "react";
 import avatar from "../../images/Avatar.svg";
 import "./SideBar.css";
 

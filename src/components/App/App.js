@@ -113,7 +113,7 @@ function App() {
   };
 
   function handleAddItemSubmit(newItem) {
-    setAllClothesList([...allClothesList, newItem]);
+    setAllClothesList([newItem, ...allClothesList]);
     addItemApi(newItem);
   }
 

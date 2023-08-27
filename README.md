@@ -16,7 +16,6 @@ What to Wear (WTWR) is a front-end web application that helps users decide on th
 
 - **Personalization:** Adding user profiles with preferences to tailor recommendations.
 - **Multi-Language Support:** Extending the app for global use by including different language options.
-- **Celsius Option:** Adding an option for users to view temperature in Celsius.
 
 **Project Preview**  
 [Live Site](https://jduncan017.github.io/se_project_react/)

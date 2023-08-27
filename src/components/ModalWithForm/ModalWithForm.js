@@ -1,7 +1,14 @@
 import useEscape from "../../hooks/useEscape";
 import "./ModalWithForm.css";
+import closeButton from "../../images/close-button-black.svg";
 
-const ModalWithForm = ({ onClose, formInfo, children, handleSubmit }) => {
+const ModalWithForm = ({
+  onClose,
+  formInfo,
+  children,
+  handleSubmit,
+  buttonState,
+}) => {
   useEscape(onClose);
 
   return (
@@ -23,7 +30,7 @@ const ModalWithForm = ({ onClose, formInfo, children, handleSubmit }) => {
           <button
             className="modal-with-form__submit-button"
             type="submit"
-            // disabled
+            disabled={!buttonState}
           >
             {formInfo.buttonText}
           </button>

@@ -3,6 +3,7 @@ import ClothesSection from "../ClothesSection/ClothesSection";
 import "./Profile.css";
 
 const Profile = ({ cardsList, handleClick }) => {
+  console.log(cardsList);
   return (
     <div className="profile">
       <SideBar />

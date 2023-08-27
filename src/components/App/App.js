@@ -147,10 +147,13 @@ function App() {
   }, []);
 
   // useEffect to update allClothingItems, setAllClothingItems List
-  // Note: this will need updated to work with api data!
   useEffect(() => {
     setAllClothingCards(renderCardList(allClothesList));
   }, [renderCardList, allClothesList]);
+
+  useEffect(() => {
+    console.log(allClothingCards);
+  }, [allClothingCards]);
 
   /* --------------------------------------- */
   /*               HTML RETURN               */

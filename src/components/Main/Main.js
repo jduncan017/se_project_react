@@ -22,8 +22,8 @@ const Main = ({ weatherData, allClothesList, handleCardClick }) => {
         {filteredList.map((item) => {
           return (
             <ItemCard
+              handleClick={handleCardClick(item)}
               clothingItem={item}
-              handleCardClick={handleCardClick}
               key={item._id}
             />
           );

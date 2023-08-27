@@ -24,9 +24,8 @@
 
 .modal-with-form__submit-button {
   margin-top: 32px;
-  width: 124px;
+  min-width: 124px;
   height: 36px;
-  padding: 0;
   border-radius: 4px;
   background: black;
   color: #fff;
@@ -36,6 +35,8 @@
   font-size: 16px;
   line-height: 20px;
   text-align: center;
+  align-self: flex-start;
+  padding: 0 10px;
 }
 
 .modal-with-form__submit-button:disabled {

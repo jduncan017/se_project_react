@@ -2,7 +2,12 @@ import React from "react";
 import "./ConfirmationModal.css";
 import useEscape from "../../hooks/useEscape";
 
-const ConfirmationModal = ({ onClose, handleDelete, selectedItem }) => {
+const ConfirmationModal = ({
+  onClose,
+  handleDelete,
+  selectedItem,
+  buttonDisplay,
+}) => {
   useEscape(onClose);
   return (
     <div className="modal confirmation-modal">
@@ -19,10 +24,9 @@ const ConfirmationModal = ({ onClose, handleDelete, selectedItem }) => {
           className="confirmation-modal__delete"
           onClick={() => {
             handleDelete(selectedItem);
-            onClose();
           }}
         >
-          Yes, delete item
+          {buttonDisplay}
         </button>
         <button
           type="button"

@@ -1,81 +1,39 @@
 import "./AddItemModal.css";
 import ModalWithForm from "../ModalWithForm/ModalWithForm";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { useFormAndValidation } from "../../hooks/useFormAndValidation";
 
-const AddItemModal = ({ onClose, isOpen, handleAddItems }) => {
-  const [buttonState, setButtonState] = useState(false);
-  const initialFormState = useMemo(() => {
-    return {
-      name: { value: "", isValid: false, errorMessage: "" },
-      imageUrl: { value: "", isValid: false, errorMessage: "" },
-      weather: { value: "", isValid: false, errorMessage: "" },
-    };
-  }, []);
-
-  const [formState, setFormState] = useState(initialFormState);
+const AddItemModal = ({ onClose, isOpen, handleAddItems, buttonDisplay }) => {
+  const { values, handleChange, errors, isValid, resetForm } =
+    useFormAndValidation();
 
   const formInfo = {
     title: "New Garment",
     name: "add-clothes",
-    buttonText: "Add garment",
+    buttonText: buttonDisplay,
   };
 
   /* --------------------------------------- */
   /*                 Handlers                */
   /* --------------------------------------- */
-
-  function handleChange(field) {
-    return (event) => {
-      const isValid = event.target.validity.valid;
-      const value = event.target.value;
-      const errorMessage = event.target.validationMessage;
-      setFormState({
-        ...formState,
-        [field]: { value, isValid, errorMessage },
-      });
-    };
-  }
-
-  useEffect(() => {
-    function disableSubmit(formState) {
-      let allValid = true;
-
-      Object.values(formState).forEach((input) => {
-        if (input.isValid === false) {
-          allValid = false;
-        }
-      });
-
-      setButtonState(allValid);
-    }
-
-    disableSubmit(formState);
-  }, [formState, isOpen]);
-
   function handleSubmit(e) {
     e.preventDefault();
-
-    const formData = Object.keys(formState).reduce((acc, key) => {
-      acc[key] = formState[key].value;
-      return acc;
-    }, {});
-
-    const newItem = { ...formData, _id: uuidv4() };
+    const newItem = { ...values, _id: uuidv4() };
     handleAddItems(newItem);
-    onClose();
+    resetForm();
   }
 
   useEffect(() => {
-    setFormState(initialFormState);
-  }, [isOpen, initialFormState]);
+    resetForm();
+  }, [isOpen, resetForm]);
 
   return (
     <ModalWithForm
       formInfo={formInfo}
       onClose={onClose}
       handleSubmit={handleSubmit}
-      buttonState={buttonState}
+      buttonState={isValid}
     >
       <label className="form-modal__form-label" htmlFor="name">
         Name
@@ -89,10 +47,11 @@ const AddItemModal = ({ onClose, isOpen, handleAddItems }) => {
         minLength="1"
         maxLength="30"
         required
-        onChange={handleChange("name")}
+        onChange={handleChange}
+        value={values.name || ""}
       />
       <span className="form-modal__error" id="name-error">
-        {formState.name.errorMessage}
+        {errors.name || ""}
       </span>
       <label className="form-modal__form-label" htmlFor="link">
         Image
@@ -100,14 +59,15 @@ const AddItemModal = ({ onClose, isOpen, handleAddItems }) => {
       <input
         className="form-modal__form-input"
         id="link"
-        name="link"
+        name="imageUrl"
         placeholder="Image link"
         type="url"
         required
-        onChange={handleChange("imageUrl")}
+        onChange={handleChange}
+        value={values.imageUrl || ""}
       />
       <span className="form-modal__error" id="link-error">
-        {formState.imageUrl.errorMessage}
+        {errors.imageUrl || ""}
       </span>
       <h3 className="add-clothes-modal__radio-selector-title">
         Select the weather type:
@@ -117,9 +77,10 @@ const AddItemModal = ({ onClose, isOpen, handleAddItems }) => {
           className="add-clothes-modal__radio-selector"
           type="radio"
           id="hot"
-          name="temperature"
+          name="weather"
           value="hot"
-          onChange={handleChange("weather")}
+          onChange={handleChange}
+          checked={values.weather === "hot"}
         />
         <label className="add-clothes-modal__radio-selector-name" htmlFor="hot">
           Hot
@@ -130,9 +91,10 @@ const AddItemModal = ({ onClose, isOpen, handleAddItems }) => {
           className="add-clothes-modal__radio-selector"
           type="radio"
           id="warm"
-          name="temperature"
+          name="weather"
           value="warm"
-          onChange={handleChange("weather")}
+          onChange={handleChange}
+          checked={values.weather === "warm"}
         />
         <label
           className="add-clothes-modal__radio-selector-name"
@@ -146,9 +108,10 @@ const AddItemModal = ({ onClose, isOpen, handleAddItems }) => {
           className="add-clothes-modal__radio-selector"
           type="radio"
           id="cold"
-          name="temperature"
+          name="weather"
           value="cold"
-          onChange={handleChange("weather")}
+          onChange={handleChange}
+          checked={values.weather === "cold"}
         />
         <label
           className="add-clothes-modal__radio-selector-name"

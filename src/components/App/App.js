@@ -19,10 +19,9 @@ function App() {
   /*          STATE DECLARATIONS             */
   /* --------------------------------------- */
   // modal states:
-  const [addModalOpen, setAddModalOpen] = useState(false);
-  const [imageModalOpen, setImageModalOpen] = useState(false);
-  const [ConfirmationModalOpen, setConfirmationModalOpen] = useState(false);
+  const [currentModal, setCurrentModal] = useState(null);
   const [selectedItem, setSelectedItem] = useState({ src: "", name: "" });
+  const [buttonDisplay, setButtonDisplay] = useState("");
 
   // weather states
   const [weatherData, setWeatherData] = useState({ name: "", temp: "" });
@@ -46,43 +45,37 @@ function App() {
     }
   };
 
-  // modal open / close function (add clothes)
-  function toggleAddModal() {
-    setAddModalOpen(!addModalOpen);
+  function toggleModal(modalName, buttonDisplay = null) {
+    if (currentModal === modalName) {
+      setCurrentModal(null);
+    } else {
+      setCurrentModal(modalName);
+      setButtonDisplay(buttonDisplay);
+    }
   }
 
-  //  modal open / close function (clothing image popup)
-  const toggleImageModal = useCallback(() => {
-    setImageModalOpen(!imageModalOpen);
-  }, [imageModalOpen]);
-
-  // modal open / close function (confirmation Modal)
-  function toggleConfirmationModal() {
-    setConfirmationModalOpen(!ConfirmationModalOpen);
+  function handleToggleSwitchChange() {
+    setCurrentTemperatureUnit(currentTemperatureUnit === "F" ? "C" : "F");
   }
 
   const handleCardClick = useCallback(
     (item) => {
       return () => {
         setSelectedItem(item);
-        toggleImageModal();
+        toggleModal("image");
       };
     },
-    [toggleImageModal]
+    [toggleModal]
   );
-
-  function handleToggleSwitchChange() {
-    setCurrentTemperatureUnit(currentTemperatureUnit === "F" ? "C" : "F");
-  }
 
   const renderCardList = useCallback(
     (clothingItems) => {
-      return clothingItems.map((items) => {
+      return clothingItems.map((item) => {
         return (
           <ItemCard
-            handleClick={handleCardClick(items)}
-            key={items._id}
-            clothingItem={items}
+            handleClick={handleCardClick(item)}
+            key={item._id}
+            clothingItem={item}
           />
         );
       });
@@ -90,39 +83,34 @@ function App() {
     [handleCardClick]
   );
 
-  const addItemApi = async (newItem) => {
-    const postItem = async () => {
-      try {
-        return await api("POST", newItem);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    postItem();
-  };
-
-  const deleteItemApi = async (item) => {
-    const deleteItem = async () => {
-      try {
-        return await api("DELETE", item, item._id);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    deleteItem();
-  };
-
-  function handleAddItemSubmit(newItem) {
-    setAllClothesList([newItem, ...allClothesList]);
-    addItemApi(newItem);
+  // I tried to setIsLoading but since state is async,
+  // I couldn't get it to update fast enough to update buttonDisplay
+  async function handleAddItemSubmit(newItem) {
+    try {
+      setButtonDisplay("Saving...");
+      await api("POST", newItem);
+      toggleModal("add", "Add garment");
+      setAllClothesList([newItem, ...allClothesList]);
+    } catch (error) {
+      setButtonDisplay("Server error, try again");
+      console.error("Couldn't add the item:", error);
+    }
   }
 
-  function handleDeleteItemConfirm(item) {
-    const filteredList = allClothesList.filter((items) => {
-      return items._id !== item._id;
-    });
-    setAllClothesList(filteredList);
-    deleteItemApi(item);
+  async function handleDeleteItemConfirm(item) {
+    try {
+      setButtonDisplay("Deleting...");
+      await api("DELETE", item, item._id);
+      toggleModal("confirm", "Yes, delete item");
+      setAllClothesList(
+        allClothesList.filter((items) => {
+          return items._id !== item._id;
+        })
+      );
+    } catch (error) {
+      setButtonDisplay("Server error, try again");
+      console.error("Couldn't delete item:", error);
+    }
   }
 
   /* --------------------------------------- */
@@ -151,10 +139,6 @@ function App() {
     setAllClothingCards(renderCardList(allClothesList));
   }, [renderCardList, allClothesList]);
 
-  useEffect(() => {
-    console.log(allClothingCards);
-  }, [allClothingCards]);
-
   /* --------------------------------------- */
   /*               HTML RETURN               */
   /* --------------------------------------- */
@@ -166,9 +150,7 @@ function App() {
       >
         {/* HEADER */}
         <Header
-          handleClick={() =>
-            toggleAddModal("New Garment", "add-clothes", "Add garment")
-          }
+          handleClick={() => toggleModal("add", "Add garment")}
           ToggleSwitch={<ToggleSwitch />}
           weatherData={weatherData}
         />
@@ -186,36 +168,36 @@ function App() {
           <Profile
             // CARDS LIST:
             cardsList={allClothingCards}
-            handleClick={() =>
-              toggleAddModal("New Garment", "add-clothes", "Add garment")
-            }
+            handleClick={() => toggleModal("add", "Add garment")}
           />
         </Route>
 
         {/* MODAL WITH FORM: */}
-        {addModalOpen && (
+        {currentModal === "add" && (
           <AddItemModal
-            onClose={toggleAddModal}
-            isOpen={addModalOpen}
+            onClose={() => toggleModal("add")}
+            isOpen={currentModal === "add"}
             handleAddItems={handleAddItemSubmit}
+            buttonDisplay={buttonDisplay}
           />
         )}
 
         {/* MODAL FOR DISPLAYING CARD INFO */}
-        {imageModalOpen && (
+        {currentModal === "image" && (
           <ItemModal
-            onClose={toggleImageModal}
+            onClose={toggleModal}
             selectedItem={selectedItem}
-            confirmDelete={toggleConfirmationModal}
+            confirmDelete={() => toggleModal("confirm", "Yes, delete item")}
           />
         )}
 
         {/* MODAL FOR CONFIRMING CLOTHING DELETION */}
-        {ConfirmationModalOpen && (
+        {currentModal === "confirm" && (
           <ConfirmationModal
-            onClose={toggleConfirmationModal}
+            onClose={() => toggleModal("confirm")}
             handleDelete={handleDeleteItemConfirm}
             selectedItem={selectedItem}
+            buttonDisplay={buttonDisplay}
           />
         )}
 

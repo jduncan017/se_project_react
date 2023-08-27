@@ -1,7 +1,5 @@
 import useEscape from "../../hooks/useEscape";
 import "./ModalWithForm.css";
-import closeButton from "../../images/close-button-black.svg";
-
 const ModalWithForm = ({
   onClose,
   formInfo,
@@ -13,7 +11,7 @@ const ModalWithForm = ({
 
   return (
     <div className="modal" id="add-clothes-modal">
-      <div className="modal__overlay" onClick={onClose}></div>
+      <div className="modal__overlay" onClick={onClose} />
       <div className="modal-with-form__container">
         <h1 className="modal-with-form__title">{formInfo.title}</h1>
         <button

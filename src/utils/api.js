@@ -1,4 +1,4 @@
-const api = async (method, data = null, _id = null) => {
+const api = async (method, data = null, id = null) => {
   const baseUrl =
     // "https://my-json-server.typicode.com/jduncan017/se_project_react";
     "http://localhost:3001";
@@ -16,7 +16,7 @@ const api = async (method, data = null, _id = null) => {
     case "DELETE":
       options = {
         method: "DELETE",
-        url: `${baseUrl}/items/${_id}`,
+        url: `${baseUrl}/items/${id}`,
       };
       break;
     case "GET":

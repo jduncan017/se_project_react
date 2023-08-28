@@ -19,7 +19,7 @@ const AddItemModal = ({ onClose, isOpen, handleAddItems, buttonDisplay }) => {
   /* --------------------------------------- */
   function handleSubmit(e) {
     e.preventDefault();
-    const newItem = { ...values, _id: uuidv4() };
+    const newItem = { ...values, id: uuidv4() };
     handleAddItems(newItem);
   }
 

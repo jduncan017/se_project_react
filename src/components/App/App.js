@@ -77,7 +77,7 @@ function App() {
         return (
           <ItemCard
             handleClick={handleCardClick(item)}
-            key={item._id}
+            key={item.id}
             clothingItem={item}
           />
         );
@@ -101,11 +101,11 @@ function App() {
   async function handleDeleteItemConfirm(item) {
     try {
       setButtonDisplay("Deleting...");
-      await api("DELETE", item, item._id);
+      await api("DELETE", item, item.id);
       toggleModal("confirm", "Yes, delete item");
       setAllClothesList(
         allClothesList.filter((items) => {
-          return items._id !== item._id;
+          return items.id !== item.id;
         })
       );
     } catch (error) {

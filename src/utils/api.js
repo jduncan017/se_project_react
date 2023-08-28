@@ -1,7 +1,7 @@
 const api = async (method, data = null, id = null) => {
   const baseUrl =
-    // "https://my-json-server.typicode.com/jduncan017/se_project_react";
-    "http://localhost:3001";
+    "https://my-json-server.typicode.com/jduncan017/se_project_react";
+  // "http://localhost:3001";
   let options;
 
   switch (method) {

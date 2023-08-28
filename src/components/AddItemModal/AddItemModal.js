@@ -21,7 +21,6 @@ const AddItemModal = ({ onClose, isOpen, handleAddItems, buttonDisplay }) => {
     e.preventDefault();
     const newItem = { ...values, _id: uuidv4() };
     handleAddItems(newItem);
-    resetForm();
   }
 
   useEffect(() => {

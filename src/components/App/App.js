@@ -45,14 +45,17 @@ function App() {
     }
   };
 
-  function toggleModal(modalName, buttonDisplay = null) {
-    if (currentModal === modalName) {
-      setCurrentModal(null);
-    } else {
-      setCurrentModal(modalName);
-      setButtonDisplay(buttonDisplay);
-    }
-  }
+  const toggleModal = useCallback(
+    (modalName, buttonDisplay = null) => {
+      if (currentModal === modalName) {
+        setCurrentModal(null);
+      } else {
+        setCurrentModal(modalName);
+        setButtonDisplay(buttonDisplay);
+      }
+    },
+    [currentModal]
+  );
 
   function handleToggleSwitchChange() {
     setCurrentTemperatureUnit(currentTemperatureUnit === "F" ? "C" : "F");
@@ -83,8 +86,6 @@ function App() {
     [handleCardClick]
   );
 
-  // I tried to setIsLoading but since state is async,
-  // I couldn't get it to update fast enough to update buttonDisplay
   async function handleAddItemSubmit(newItem) {
     try {
       setButtonDisplay("Saving...");
@@ -137,7 +138,7 @@ function App() {
   // useEffect to update allClothingItems, setAllClothingItems List
   useEffect(() => {
     setAllClothingCards(renderCardList(allClothesList));
-  }, [renderCardList, allClothesList]);
+  }, [allClothesList, renderCardList]);
 
   /* --------------------------------------- */
   /*               HTML RETURN               */

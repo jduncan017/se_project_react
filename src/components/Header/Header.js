@@ -39,8 +39,8 @@ const Header = ({ handleClick, weatherData }) => {
       >
         <ToggleSwitch />
         <button
-          className={`header__add-clothes ${
-            isMobileMenuOpened ? "header__add-clothes_visible" : ""
+          className={`header__button ${
+            isMobileMenuOpened ? "header__button" : ""
           }`}
           onClick={() => {
             handleClick();
@@ -49,6 +49,11 @@ const Header = ({ handleClick, weatherData }) => {
         >
           + Add Clothes
         </button>
+        <Link to="/">
+          <button className="header__button" type="button">
+            Home
+          </button>
+        </Link>
         <Link
           to="/profile"
           onClick={() => {
@@ -60,7 +65,7 @@ const Header = ({ handleClick, weatherData }) => {
               isMobileMenuOpened ? "header__user-info-container_opened" : ""
             }`}
           >
-            <div className="header__username">Joshua Duncan</div>
+            <div className="header__username">User Profile</div>
             <img
               src={avatar}
               alt="user avatar"

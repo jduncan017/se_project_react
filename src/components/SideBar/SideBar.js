@@ -10,7 +10,7 @@ const SideBar = () => {
           alt="user avatar"
           className="sidebar__user-avatar"
         ></img>
-        <h3 className="sidebar__username">Joshua Duncan</h3>
+        <h3 className="sidebar__username">User Profile</h3>
       </div>
     </div>
   );

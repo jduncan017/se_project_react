@@ -6,6 +6,7 @@ const ModalWithForm = ({
   children,
   handleSubmit,
   buttonState,
+  extraButtons,
 }) => {
   useEscape(onClose);
 
@@ -25,13 +26,27 @@ const ModalWithForm = ({
           onSubmit={handleSubmit}
         >
           {children}
-          <button
-            className="modal-with-form__submit-button"
-            type="submit"
-            disabled={!buttonState}
-          >
-            {formInfo.buttonText}
-          </button>
+          <div className="modal-with-form__button-wrapper">
+            <button
+              className="modal-with-form__submit-button"
+              type="submit"
+              disabled={!buttonState}
+            >
+              {formInfo.buttonText}
+            </button>
+            {extraButtons &&
+              extraButtons.map((btn, index) => (
+                <button
+                  key={index}
+                  className={btn.className || "modal-with-form__extra-button"}
+                  type={btn.type || "button"}
+                  onClick={btn.onClick}
+                  disabled={btn.disabled}
+                >
+                  {btn.text}
+                </button>
+              ))}
+          </div>
         </form>
       </div>
     </div>

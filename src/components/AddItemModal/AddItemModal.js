@@ -4,14 +4,14 @@ import { useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useFormAndValidation } from "../../hooks/useFormAndValidation";
 
-const AddItemModal = ({ onClose, isOpen, handleAddItems, buttonDisplay }) => {
+const AddItemModal = ({ onClose, isOpen, handleAddItems }) => {
   const { values, handleChange, errors, isValid, resetForm } =
     useFormAndValidation();
 
   const formInfo = {
     title: "New Garment",
     name: "add-clothes",
-    buttonText: buttonDisplay,
+    buttonText: "Add garment",
   };
 
   /* --------------------------------------- */

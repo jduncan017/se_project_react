@@ -6,7 +6,7 @@ import WeatherCard from "../WeatherCard/WeatherCard";
 
 const Main = ({ weatherData, allClothesList, handleCardClick }) => {
   const { currentTemperatureUnit } = useContext(CurrentTemperatureUnitContext);
-  const temperature = weatherData.temp[currentTemperatureUnit];
+  const temperature = weatherData.temp.currentTemperatureUnit;
 
   const filteredList = allClothesList.filter((item) => {
     return item.weather === weatherData.tempCategory;

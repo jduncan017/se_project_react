@@ -1,4 +1,4 @@
-const api = async (method, data = null, id = null) => {
+const api = async (method, path, authToken = null, data = null) => {
   const baseUrl =
     "https://my-json-server.typicode.com/jduncan017/se_project_react";
   // "http://localhost:3001";
@@ -8,29 +8,32 @@ const api = async (method, data = null, id = null) => {
     case "POST":
       options = {
         method: "POST",
-        url: `${baseUrl}/items`,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
+        authorization: `Bearer ${authToken}`,
       };
       break;
     case "DELETE":
       options = {
         method: "DELETE",
-        url: `${baseUrl}/items/${id}`,
+        authorization: `Bearer ${authToken}`,
       };
       break;
     case "GET":
       options = {
         method: "GET",
-        url: `${baseUrl}/items`,
+        authorization: `Bearer ${authToken}`,
       };
+      break;
+    case "AUTH":
+      options = data;
       break;
     default:
       throw new Error(`Method not supported: ${method}`);
   }
 
   try {
-    const res = await fetch(options.url, options);
+    const res = await fetch(`${baseUrl}/${path}`, options);
 
     if (!res.ok) {
       throw new Error(`Oops there's an error!: ${res.status}`);

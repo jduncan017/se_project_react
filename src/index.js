@@ -4,13 +4,19 @@ import "./index.css";
 import App from "./components/App/App";
 import reportWebVitals from "./reportWebVitals";
 import { HashRouter, Switch } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import { CurrentUserProvider } from "./contexts/CurrentUserContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <HashRouter>
       <Switch>
-        <App />
+        <AuthProvider>
+          <CurrentUserProvider>
+            <App />
+          </CurrentUserProvider>
+        </AuthProvider>
       </Switch>
     </HashRouter>
   </React.StrictMode>

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { Route } from "react-router-dom";
+import React, { useState, useEffect, useCallback, useContext } from "react";
+import { Route, useLocation } from "react-router-dom";
 import Header from "../Header/Header";
 import Main from "../Main/Main";
 import ItemCard from "../ItemCard/ItemCard";
@@ -10,8 +10,14 @@ import weatherApiRequest from "../../utils/weatherApi";
 import Profile from "../Profile/Profile";
 import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
 import AddItemModal from "../AddItemModal/AddItemModal";
-import { CurrentTemperatureUnitContext } from "../../contexts/CurrentTemperatureUnitContext";
+import SignUpModal from "../SignUpModal/SignUpModal";
+import LoginModal from "../LoginModal/LoginModal";
+import ProtectedRoute from "../../utils/ProtectedRoute";
+import { CurrentTemperatureUnitProvider } from "../../contexts/CurrentTemperatureUnitContext";
+import { AuthContext } from "../../contexts/AuthContext";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import api from "../../utils/api";
+import { signup, login, validateToken } from "../../utils/auth";
 import "./App.css";
 
 function App() {
@@ -25,20 +31,23 @@ function App() {
 
   // weather states
   const [weatherData, setWeatherData] = useState({ name: "", temp: "" });
-  const [currentTemperatureUnit, setCurrentTemperatureUnit] =
-    React.useState("F");
 
   // clothing item states
   const [allClothesList, setAllClothesList] = useState([]);
   const [allClothingCards, setAllClothingCards] = useState([]);
 
+  // constants
+  const location = useLocation();
+  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  const { setCurrentUser } = useContext(CurrentUserContext);
+
   /* --------------------------------------- */
   /*          FUNCTION DECLARATIONS          */
   /* --------------------------------------- */
-  // fetch user clothing items:
   const fetchUserClothes = async () => {
+    const token = localStorage.getItem("jwt");
     try {
-      const clothesList = await api("GET");
+      const clothesList = await api("GET", "items", token);
       setAllClothesList(clothesList);
     } catch (error) {
       console.error(error);
@@ -56,10 +65,6 @@ function App() {
     },
     [currentModal]
   );
-
-  function handleToggleSwitchChange() {
-    setCurrentTemperatureUnit(currentTemperatureUnit === "F" ? "C" : "F");
-  }
 
   const handleCardClick = useCallback(
     (item) => {
@@ -86,10 +91,36 @@ function App() {
     [handleCardClick]
   );
 
+  async function handleLogin({ email, password }) {
+    try {
+      const config = login(email, password);
+      const res = await api("AUTH", "login", "", config);
+      if (res.token) {
+        localStorage.setItem("jwt", res.token);
+        setCurrentModal(null);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function handleSignup({ name, avatar, email, password }) {
+    try {
+      const config = signup(name, avatar, email, password);
+      const res = await api("AUTH", "signup", "", config);
+      if (res.success) {
+        handleLogin({ email, password });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   async function handleAddItemSubmit(newItem) {
+    const token = localStorage.getItem("jwt");
     try {
       setButtonDisplay("Saving...");
-      await api("POST", newItem);
+      await api("POST", "items", token, newItem);
       toggleModal("add", "Add garment");
       setAllClothesList([newItem, ...allClothesList]);
     } catch (error) {
@@ -99,9 +130,10 @@ function App() {
   }
 
   async function handleDeleteItemConfirm(item) {
+    const token = localStorage.getItem("jwt");
     try {
       setButtonDisplay("Deleting...");
-      await api("DELETE", item, item.id);
+      await api("DELETE", `items/${item.id}`, token, item);
       toggleModal("confirm", "Yes, delete item");
       setAllClothesList(
         allClothesList.filter((items) => {
@@ -135,10 +167,36 @@ function App() {
     fetchWeather();
   }, []);
 
-  // useEffect to update allClothingItems, setAllClothingItems List
+  // update allClothingItems, setAllClothingItems List
   useEffect(() => {
     setAllClothingCards(renderCardList(allClothesList));
   }, [allClothesList, renderCardList]);
+
+  // opens login modal uppon redirect for unAuth'd users
+  useEffect(() => {
+    if ((location.pathname === "/home/login") & !isLoggedIn) {
+      setCurrentModal("login");
+    } else {
+      setCurrentModal(null);
+    }
+  }, [location, isLoggedIn]);
+
+  // checks for jwt token and validates with server
+  useEffect(() => {
+    const token = localStorage.getItem("jwt");
+    if (token) {
+      const config = validateToken(token);
+      api("AUTH", "user/me", "", config)
+        .then((userData) => {
+          setCurrentUser(userData);
+          setIsLoggedIn(true);
+        })
+        .catch((error) => {
+          console.error("Token validation failed:", error);
+          localStorage.removeItem("jwt");
+        });
+    }
+  }, [setCurrentUser, setIsLoggedIn]);
 
   /* --------------------------------------- */
   /*               HTML RETURN               */
@@ -146,18 +204,18 @@ function App() {
 
   return (
     <div className="page">
-      <CurrentTemperatureUnitContext.Provider
-        value={{ currentTemperatureUnit, handleToggleSwitchChange }}
-      >
+      {/* --------------------------------------- */
+      /*                  ROUTES                 */
+      /* --------------------------------------- */}
+      <CurrentTemperatureUnitProvider>
         {/* HEADER */}
         <Header
-          handleClick={() => toggleModal("add", "Add garment")}
+          handleClick={toggleModal}
           ToggleSwitch={<ToggleSwitch />}
           weatherData={weatherData}
         />
 
-        {/* MAIN */}
-        <Route exact path="/">
+        <Route path="/home">
           <Main
             weatherData={weatherData}
             allClothesList={allClothesList}
@@ -165,15 +223,18 @@ function App() {
             handleCardClick={handleCardClick}
           />
         </Route>
-        <Route path="/profile">
+        <ProtectedRoute path="/profile">
           <Profile
             // CARDS LIST:
             cardsList={allClothingCards}
-            handleClick={() => toggleModal("add", "Add garment")}
+            handleClick={() => toggleModal("add")}
           />
-        </Route>
+        </ProtectedRoute>
 
-        {/* MODAL WITH FORM: */}
+        {/* --------------------------------------- */
+        /*                 MODALS                  */
+        /* --------------------------------------- */}
+        {/* ADD CLOTHES MODAL */}
         {currentModal === "add" && (
           <AddItemModal
             onClose={() => toggleModal("add")}
@@ -201,10 +262,31 @@ function App() {
             buttonDisplay={buttonDisplay}
           />
         )}
+        {/* MODAL FOR USER REGISTRATION */}
+        {currentModal === "signup" && (
+          <SignUpModal
+            onClose={() => toggleModal("signup")}
+            isOpen={currentModal === "signup"}
+            handleSignup={handleSignup}
+            buttonDisplay={buttonDisplay}
+            handleClick={toggleModal}
+          />
+        )}
+        {/* MODAL FOR USER LOGIN */}
+        {currentModal === "login" && (
+          <LoginModal
+            onClose={() => toggleModal("login")}
+            isOpen={currentModal === "login"}
+            handleLogin={handleLogin}
+            buttonDisplay={buttonDisplay}
+            handleClick={toggleModal}
+          />
+        )}
+        {/* MAIN */}
 
         {/* FOOTER */}
         <Footer />
-      </CurrentTemperatureUnitContext.Provider>
+      </CurrentTemperatureUnitProvider>
     </div>
   );
 }

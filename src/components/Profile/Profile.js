@@ -6,7 +6,7 @@ const Profile = ({ cardsList, handleClick }) => {
   return (
     <div className="profile">
       <SideBar />
-      <ClothesSection cardsList={cardsList} handleClick={handleClick} />
+      <ClothesSection cardsList={cardsList} handleClick={handleClick("Add")} />
     </div>
   );
 };

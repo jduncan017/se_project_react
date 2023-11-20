@@ -1,6 +1,6 @@
 import React from "react";
 import "./ConfirmationModal.css";
-import useEscape from "../../hooks/useEscape";
+import useEscape from "../../../hooks/useEscape";
 
 const ConfirmationModal = ({
   onClose,

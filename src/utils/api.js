@@ -1,28 +1,34 @@
 const api = async (method, path, authToken = null, data = null) => {
   const baseUrl =
-    "https://my-json-server.typicode.com/jduncan017/se_project_react";
-  // "http://localhost:3001";
+    // "https://my-json-server.typicode.com/jduncan017/se_project_react";
+    "http://localhost:3001";
   let options;
 
   switch (method) {
     case "POST":
       options = {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${authToken}`,
+        },
         body: JSON.stringify(data),
-        authorization: `Bearer ${authToken}`,
       };
       break;
     case "DELETE":
       options = {
         method: "DELETE",
-        authorization: `Bearer ${authToken}`,
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
       };
       break;
     case "GET":
       options = {
         method: "GET",
-        authorization: `Bearer ${authToken}`,
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
       };
       break;
     case "AUTH":
@@ -33,7 +39,11 @@ const api = async (method, path, authToken = null, data = null) => {
   }
 
   try {
+    console.log(
+      `Request: ${method}, Options: ${JSON.stringify(options)}, Path: ${path}`
+    );
     const res = await fetch(`${baseUrl}/${path}`, options);
+    console.log(res);
 
     if (!res.ok) {
       throw new Error(`Oops there's an error!: ${res.status}`);

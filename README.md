@@ -22,3 +22,9 @@ What to Wear (WTWR) is a front-end web application that helps users decide on th
 
 **Codebase**  
 Dig into the Github Codebase for all the geeky details of the project.
+
+**TODO**
+
+- Add a default clothing example for when a user first signs up
+- Update itemModal to remove the x if the user Id doesn't match the owner id.
+-

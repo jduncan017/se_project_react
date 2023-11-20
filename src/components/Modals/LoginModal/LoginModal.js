@@ -1,7 +1,7 @@
 import "./LoginModal.css";
-import ModalWithForm from "../ModalWithForm/ModalWithForm";
+import ModalWithForm from "../../Modals/ModalWithForm/ModalWithForm";
 import { useEffect } from "react";
-import { useFormAndValidation } from "../../hooks/useFormAndValidation";
+import { useFormAndValidation } from "../../../hooks/useFormAndValidation";
 
 const SignUpModal = ({ onClose, isOpen, handleLogin, handleClick }) => {
   const { values, handleChange, errors, isValid, resetForm } =
@@ -29,8 +29,7 @@ const SignUpModal = ({ onClose, isOpen, handleLogin, handleClick }) => {
   /* --------------------------------------- */
   function handleSubmit(e) {
     e.preventDefault();
-    const user = { values };
-    handleLogin(user);
+    handleLogin(values);
   }
 
   useEffect(() => {

@@ -4,26 +4,26 @@ import Header from "../Header/Header";
 import Main from "../Main/Main";
 import ItemCard from "../ItemCard/ItemCard";
 import Footer from "../Footer/Footer";
-import ItemModal from "../ItemModal/ItemModal";
+import ItemModal from "../Modals/ItemModal/ItemModal";
 import ToggleSwitch from "../ToggleSwitch/ToggleSwitch";
 import weatherApiRequest from "../../utils/weatherApi";
 import Profile from "../Profile/Profile";
-import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
-import AddItemModal from "../AddItemModal/AddItemModal";
-import SignUpModal from "../SignUpModal/SignUpModal";
-import LoginModal from "../LoginModal/LoginModal";
+import ConfirmationModal from "../Modals/ConfirmationModal/ConfirmationModal";
+import AddItemModal from "../Modals/ItemModal/ItemModal";
+import SignUpModal from "../Modals/SignUpModal/SignUpModal";
+import LoginModal from "../Modals/LoginModal/LoginModal";
 import ProtectedRoute from "../../utils/ProtectedRoute";
 import { CurrentTemperatureUnitProvider } from "../../contexts/CurrentTemperatureUnitContext";
 import { AuthContext } from "../../contexts/AuthContext";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import api from "../../utils/api";
-import { signup, login, validateToken } from "../../utils/auth";
+import { signup, login } from "../../utils/auth";
 import "./App.css";
 
 function App() {
-  /* --------------------------------------- */
-  /*          STATE DECLARATIONS             */
-  /* --------------------------------------- */
+  // --------------------------------------- //
+  //        - STATE DECLARATIONS -           //
+  // --------------------------------------- //
   // modal states:
   const [currentModal, setCurrentModal] = useState(null);
   const [selectedItem, setSelectedItem] = useState({ src: "", name: "" });
@@ -39,29 +39,21 @@ function App() {
   // constants
   const location = useLocation();
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
-  const { setCurrentUser } = useContext(CurrentUserContext);
+  const { setCurrentUser, currentUser } = useContext(CurrentUserContext);
 
-  /* --------------------------------------- */
-  /*          FUNCTION DECLARATIONS          */
-  /* --------------------------------------- */
-  const fetchUserClothes = async () => {
-    const token = localStorage.getItem("jwt");
-    try {
-      const clothesList = await api("GET", "items", token);
-      setAllClothesList(clothesList);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
+  // --------------------------------------- //
+  //        - FUNCTION DECLARATIONS -        //
+  // --------------------------------------- //
   const toggleModal = useCallback(
-    (modalName, buttonDisplay = null) => {
+    (modalName, buttonDisplay = null, ...additionalTextOptions) => {
+      const additionalText = [additionalTextOptions];
       if (currentModal === modalName) {
         setCurrentModal(null);
       } else {
         setCurrentModal(modalName);
         setButtonDisplay(buttonDisplay);
       }
+      return additionalText;
     },
     [currentModal]
   );
@@ -82,7 +74,7 @@ function App() {
         return (
           <ItemCard
             handleClick={handleCardClick(item)}
-            key={item.id}
+            key={item._id}
             clothingItem={item}
           />
         );
@@ -91,13 +83,26 @@ function App() {
     [handleCardClick]
   );
 
+  async function getUserInfo(authToken) {
+    try {
+      const userInfo = await api("GET", "user/me", authToken);
+      return userInfo;
+    } catch (error) {
+      console.error("Can't access user", error);
+    }
+  }
+
   async function handleLogin({ email, password }) {
+    console.log("logging in!");
     try {
       const config = login(email, password);
-      const res = await api("AUTH", "login", "", config);
+      const res = await api("AUTH", "signin", "", config);
       if (res.token) {
         localStorage.setItem("jwt", res.token);
         setCurrentModal(null);
+        setIsLoggedIn(true);
+        const userInfo = getUserInfo(res.token);
+        setCurrentUser(userInfo);
       }
     } catch (error) {
       console.error(error);
@@ -107,10 +112,9 @@ function App() {
   async function handleSignup({ name, avatar, email, password }) {
     try {
       const config = signup(name, avatar, email, password);
-      const res = await api("AUTH", "signup", "", config);
-      if (res.success) {
-        handleLogin({ email, password });
-      }
+      await api("AUTH", "signup", "", config);
+      handleLogin({ email, password });
+      setAllClothesList();
     } catch (error) {
       console.error(error);
     }
@@ -146,13 +150,24 @@ function App() {
     }
   }
 
-  /* --------------------------------------- */
-  /*               USE EFFECTS               */
-  /* --------------------------------------- */
+  // --------------------------------------- //
+  //            -  USE EFFECTS -             //
+  // --------------------------------------- //
   // initial fetch of user clothes:
   useEffect(() => {
-    fetchUserClothes();
-  }, []);
+    const fetchUserClothes = async () => {
+      const token = localStorage.getItem("jwt");
+      try {
+        const clothesList = await api("GET", "items", token);
+        const userClothesList = clothesList.filter((item) => {
+          return item.owner === currentUser._id;
+        });
+        setAllClothesList(userClothesList);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  }, [currentUser]);
 
   // fetch weather data:
   useEffect(() => {
@@ -185,11 +200,13 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem("jwt");
     if (token) {
-      const config = validateToken(token);
-      api("AUTH", "user/me", "", config)
+      getUserInfo(token)
         .then((userData) => {
+          userData.avatar = null ? userData.name[0] : userData.avatar;
           setCurrentUser(userData);
           setIsLoggedIn(true);
+          // ! Delete
+          console.log("CurrentUser:", userData);
         })
         .catch((error) => {
           console.error("Token validation failed:", error);
@@ -198,9 +215,9 @@ function App() {
     }
   }, [setCurrentUser, setIsLoggedIn]);
 
-  /* --------------------------------------- */
-  /*               HTML RETURN               */
-  /* --------------------------------------- */
+  // --------------------------------------- //
+  //             - HTML RETURN -             //
+  // --------------------------------------- //
 
   return (
     <div className="page">
@@ -227,7 +244,7 @@ function App() {
           <Profile
             // CARDS LIST:
             cardsList={allClothingCards}
-            handleClick={() => toggleModal("add")}
+            handleClick={() => toggleModal()}
           />
         </ProtectedRoute>
 
@@ -262,6 +279,7 @@ function App() {
             buttonDisplay={buttonDisplay}
           />
         )}
+
         {/* MODAL FOR USER REGISTRATION */}
         {currentModal === "signup" && (
           <SignUpModal
@@ -272,6 +290,7 @@ function App() {
             handleClick={toggleModal}
           />
         )}
+
         {/* MODAL FOR USER LOGIN */}
         {currentModal === "login" && (
           <LoginModal

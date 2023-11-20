@@ -1,13 +1,13 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Header.css";
 import logoPath from "../../images/Logo.svg";
-import avatar from "../../images/Avatar.svg";
 import openMenuIcon from "../../images/hamburger-icon.png";
 import closeMenuIcon from "../../images/close-icon-black.png";
 import ToggleSwitch from "../ToggleSwitch/ToggleSwitch";
 import { AuthContext } from "../../contexts/AuthContext";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
+import getInitials from "../../utils/getInitials";
 
 function getCurrentDate() {
   const currentDate = new Date().toLocaleString("default", {
@@ -21,6 +21,10 @@ const Header = ({ handleClick, weatherData }) => {
   const [isMobileMenuOpened, setMobileMenuOpened] = useState(false);
   const { isLoggedIn } = useContext(AuthContext);
   const { currentUser } = useContext(CurrentUserContext);
+
+  useEffect((currentUser) => {
+    const userName = currentUser ? currentUser : "P R";
+  });
 
   const toggleMobileMenu = () => {
     setMobileMenuOpened(!isMobileMenuOpened);
@@ -56,11 +60,17 @@ const Header = ({ handleClick, weatherData }) => {
           }`}
         >
           <div className="header__username">{currentUser.name}</div>
-          <img
-            src={isLoggedIn ? currentUser.avatar : avatar}
-            alt="user avatar"
-            className="header__user-avatar"
-          ></img>
+          <div className="header__image-container">
+            {currentUser.avatar ? (
+              <img
+                src={currentUser.avatar}
+                alt="user avatar"
+                className="header__user-avatar"
+              ></img>
+            ) : (
+              getInitials(currentUser.name)
+            )}
+          </div>
         </div>
       </Link>
     </>

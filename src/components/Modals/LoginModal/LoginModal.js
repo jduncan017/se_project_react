@@ -3,7 +3,7 @@ import ModalWithForm from "../../Modals/ModalWithForm/ModalWithForm";
 import { useEffect } from "react";
 import { useFormAndValidation } from "../../../hooks/useFormAndValidation";
 
-const SignUpModal = ({ onClose, isOpen, handleLogin, handleClick }) => {
+const LoginModal = ({ onClose, isOpen, handleLogin, handleClick }) => {
   const { values, handleChange, errors, isValid, resetForm } =
     useFormAndValidation();
 
@@ -84,4 +84,4 @@ const SignUpModal = ({ onClose, isOpen, handleLogin, handleClick }) => {
   );
 };
 
-export default SignUpModal;
+export default LoginModal;

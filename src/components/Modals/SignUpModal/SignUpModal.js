@@ -99,15 +99,14 @@ const SignUpModal = ({ onClose, isOpen, handleSignup, handleClick }) => {
         {errors.name || ""}
       </span>
       <label className="form-modal__form-label" htmlFor="link">
-        Avatar URL
+        Profile Picture URL
       </label>
       <input
         className="form-modal__form-input"
         id="link"
         name="avatar"
-        placeholder="Image link"
+        placeholder="Image Link"
         type="url"
-        required
         onChange={handleChange}
         value={values.avatar || ""}
       />

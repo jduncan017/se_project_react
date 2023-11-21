@@ -81,13 +81,13 @@ const EditProfileModal = ({ onClose, isOpen, handleProfileUpdate }) => {
         {errors.email || ""}
       </span>
       <label className="form-modal__form-label" htmlFor="link">
-        Avatar URL
+        Profile Picture URL
       </label>
       <input
         className="form-modal__form-input"
         id="link"
         name="avatar"
-        placeholder={currentUser.avatar}
+        placeholder={currentUser.avatar || "Image Link"}
         type="url"
         onChange={handleChange}
         value={values.avatar || ""}

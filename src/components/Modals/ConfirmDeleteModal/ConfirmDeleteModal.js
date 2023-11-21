@@ -9,6 +9,7 @@ const ConfirmDeleteModal = ({
   buttonDisplay,
 }) => {
   useEscape(onClose);
+  console.log(buttonDisplay);
   return (
     <div className="modal confirmation-modal">
       <div className="modal__overlay" onClick={onClose}></div>

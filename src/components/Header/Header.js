@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Header.css";
 import logoPath from "../../images/Logo.svg";
@@ -19,13 +19,8 @@ function getCurrentDate() {
 
 const Header = ({ handleClick, weatherData }) => {
   const [isMobileMenuOpened, setMobileMenuOpened] = useState(false);
-  const [username, setUsername] = useState("P R");
   const { isLoggedIn } = useContext(AuthContext);
   const { currentUser } = useContext(CurrentUserContext);
-
-  useEffect(() => {
-    setUsername(currentUser ? currentUser.name : "P R");
-  }, [currentUser]);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpened(!isMobileMenuOpened);
@@ -60,7 +55,7 @@ const Header = ({ handleClick, weatherData }) => {
             isMobileMenuOpened ? "header__user-info-container_opened" : ""
           }`}
         >
-          <div className="header__username">{username}</div>
+          <div className="header__username">{currentUser.name}</div>
           <div className="header__image-container">
             {currentUser.avatar ? (
               <img
@@ -69,7 +64,7 @@ const Header = ({ handleClick, weatherData }) => {
                 className="header__user-avatar"
               ></img>
             ) : (
-              getInitials(username)
+              getInitials(currentUser.name)
             )}
           </div>
         </div>

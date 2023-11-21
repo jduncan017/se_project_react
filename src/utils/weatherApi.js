@@ -3,9 +3,9 @@ import { apiKey, locationData, images } from "./contants";
 function setTempCategory(tempFarenheit) {
   if (tempFarenheit >= 75) {
     return "hot";
-  } else if (tempFarenheit >= 55 && tempFarenheit < 75) {
+  } else if (tempFarenheit >= 45 && tempFarenheit < 75) {
     return "warm";
-  } else if (tempFarenheit < 55) {
+  } else if (tempFarenheit < 45) {
     return "cold";
   }
 }

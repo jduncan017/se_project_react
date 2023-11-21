@@ -1,35 +1,46 @@
+/* --------------------------------------- */
+/*                 IMPORTS                 */
+/* --------------------------------------- */
+// React and third party libraries
 import React, { useState, useEffect, useCallback, useContext } from "react";
 import { Route } from "react-router-dom";
+
+// Contexts
+import { CurrentTemperatureUnitContext } from "../../contexts/CurrentTemperatureUnitContext";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
+
+//Components
 import Header from "../Header/Header";
 import Main from "../Main/Main";
 import Footer from "../Footer/Footer";
-import ItemModal from "../Modals/ItemModal/ItemModal";
 import ToggleSwitch from "../ToggleSwitch/ToggleSwitch";
-import weatherApiRequest from "../../utils/weatherApi";
 import Profile from "../Profile/Profile";
+import ItemModal from "../Modals/ItemModal/ItemModal";
 import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal/ConfirmDeleteModal";
 import AddItemModal from "../Modals/AddItemModal/AddItemModal";
 import SignUpModal from "../Modals/SignUpModal/SignUpModal";
 import LoginModal from "../Modals/LoginModal/LoginModal";
 import ConfirmLogoutModal from "../Modals/ConfirmLogoutModal/ConfirmLogoutModal";
 import EditProfileModal from "../Modals/EditProfileModal/EditProfileModal";
-import ProtectedRoute from "../../utils/ProtectedRoute";
-import { ServerResponseContext } from "../../contexts/ServerResponseContext";
-import { CurrentTemperatureUnitContext } from "../../contexts/CurrentTemperatureUnitContext";
-import { AuthContext } from "../../contexts/AuthContext";
-import { CurrentUserContext } from "../../contexts/CurrentUserContext";
+
+// Utilities
 import { api, addLike, removeLike } from "../../utils/api";
-import { signup, login } from "../../utils/auth";
+import weatherApiRequest from "../../utils/weatherApi";
+import ProtectedRoute from "../../utils/ProtectedRoute";
+
+// Hooks
+import useAuth from "../../hooks/useAuth";
+import useModal from "../../hooks/useModal";
+
+// Styles
 import "./App.css";
 
 function App() {
   // --------------------------------------- //
-  //        - STATE DECLARATIONS -           //
+  //           - DECLARATIONS -              //
   // --------------------------------------- //
   // modal states:
-  const [currentModal, setCurrentModal] = useState(null);
   const [selectedItem, setSelectedItem] = useState({ src: "", name: "" });
-  const [buttonDisplay, setButtonDisplay] = useState("");
 
   // weather states
   const [weatherData, setWeatherData] = useState({ name: "", temp: "" });
@@ -39,28 +50,21 @@ function App() {
   const [allClothesList, setAllClothesList] = useState([]);
 
   // contexts
-  const { setIsLoggedIn } = useContext(AuthContext);
   const { setCurrentUser, currentUser } = useContext(CurrentUserContext);
-  const { setServerResponse } = useContext(ServerResponseContext);
+
+  // Custom Hooks
+  const {
+    currentModal,
+    setCurrentModal,
+    buttonDisplay,
+    setButtonDisplay,
+    toggleModal,
+  } = useModal();
+  const { handleLogin, handleSignup, handleLogout } = useAuth(toggleModal);
 
   // --------------------------------------- //
   //        - FUNCTION DECLARATIONS -        //
   // --------------------------------------- //
-  const toggleModal = useCallback(
-    (modalName, buttonDisplay = null, ...additionalTextOptions) => {
-      const additionalText = [additionalTextOptions];
-      if (currentModal === modalName) {
-        setCurrentModal(null);
-      } else {
-        setCurrentModal(modalName);
-        setServerResponse("");
-        setButtonDisplay(buttonDisplay);
-      }
-      return additionalText;
-    },
-    [currentModal]
-  );
-
   const handleCardClick = useCallback(
     (item) => {
       return () => {
@@ -71,56 +75,12 @@ function App() {
     [toggleModal]
   );
 
-  async function getUserInfo(authToken) {
-    try {
-      const userInfo = await api("GET", "user/me", authToken);
-      return userInfo;
-    } catch (error) {
-      console.error("Can't access user", error);
-    }
-  }
-
   function handleToggleSwitchChange() {
     setCurrentTemperatureUnit(currentTemperatureUnit === "F" ? "C" : "F");
   }
   /* --------------------------------------- */
   /*       FUNCTIONS FOR USER ACTIONS        */
   /* --------------------------------------- */
-  async function handleLogin({ email, password }) {
-    try {
-      const config = login(email, password);
-      const res = await api("AUTH", "signin", "", config);
-      if (res.token) {
-        localStorage.setItem("jwt", res.token);
-        setCurrentModal(null);
-        setIsLoggedIn(true);
-        const userInfo = await getUserInfo(res.token);
-        setCurrentUser(userInfo);
-      }
-    } catch (error) {
-      console.error(error);
-      setServerResponse(error.message);
-    }
-  }
-
-  async function handleSignup({ name, avatar, email, password }) {
-    try {
-      const config = signup(name, avatar, email, password);
-      await api("AUTH", "signup", "", config);
-      handleLogin({ email, password });
-      setAllClothesList();
-    } catch (error) {
-      console.error(error);
-      setServerResponse(error.message);
-    }
-  }
-
-  function handleLogout() {
-    setCurrentModal(null);
-    localStorage.removeItem("jwt");
-    setIsLoggedIn(false);
-  }
-
   async function handleProfileUpdate({ name, avatar, email }) {
     const token = localStorage.getItem("jwt");
     const data = { name, avatar, email };
@@ -208,23 +168,6 @@ function App() {
     };
     fetchWeather();
   }, []);
-
-  // checks for jwt token and validates with server
-  useEffect(() => {
-    const token = localStorage.getItem("jwt");
-    if (token) {
-      getUserInfo(token)
-        .then((userData) => {
-          userData.avatar = null ? userData.name[0] : userData.avatar;
-          setCurrentUser(userData);
-          setIsLoggedIn(true);
-        })
-        .catch((error) => {
-          console.error("Token validation failed:", error);
-          localStorage.removeItem("jwt");
-        });
-    }
-  }, [setCurrentUser, setIsLoggedIn]);
 
   // --------------------------------------- //
   //             - HTML RETURN -             //

@@ -32,6 +32,9 @@
 }
 
 .sidebar__image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 50%;
   overflow: hidden;
   background-color: #5a6f8d;

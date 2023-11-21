@@ -6,13 +6,16 @@ const api = async (method, path, authToken = null, data = null) => {
 
   switch (method) {
     case "POST":
+    case "PATCH":
+    case "PUT":
+      const body = data ? JSON.stringify(data) : null;
       options = {
-        method: "POST",
+        method: method,
         headers: {
           "Content-Type": "application/json",
           authorization: `Bearer ${authToken}`,
         },
-        body: JSON.stringify(data),
+        body,
       };
       break;
     case "DELETE":
@@ -39,11 +42,7 @@ const api = async (method, path, authToken = null, data = null) => {
   }
 
   try {
-    console.log(
-      `Request: ${method}, Options: ${JSON.stringify(options)}, Path: ${path}`
-    );
     const res = await fetch(`${baseUrl}/${path}`, options);
-    console.log(res);
 
     if (!res.ok) {
       throw new Error(`Oops there's an error!: ${res.status}`);
@@ -56,4 +55,12 @@ const api = async (method, path, authToken = null, data = null) => {
   }
 };
 
-export default api;
+const addLike = (data, token) => {
+  return api("PUT", `items/${data.itemId}/likes`, token);
+};
+
+const removeLike = (data, token) => {
+  return api("DELETE", `items/${data.itemId}/likes`, token);
+};
+
+export { api, addLike, removeLike };

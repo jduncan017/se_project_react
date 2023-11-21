@@ -32,25 +32,29 @@
 }
 
 .sidebar__image-container {
-  display: flex;
   border-radius: 50%;
   overflow: hidden;
   background-color: #5a6f8d;
   color: white;
-  width: 56px;
-  height: 56px;
-  align-items: center;
-  justify-content: center;
-  margin-right: 16px;
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
 }
 
 .sidebar__user-avatar {
-  width: 56px;
-  height: 56px;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
 }
 
 .sidebar__username {
-  margin-right: 12px;
+  margin: 0 12px 0 16px;
+}
+
+.sidebar__options {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .sidebar__button {
@@ -60,6 +64,7 @@
   font-size: 20px;
   margin-top: 8px;
   cursor: pointer;
+  padding: 0;
 }
 
 @media screen and (min-width: 320px) and (max-width: 700px) {
@@ -81,5 +86,20 @@
       rgba(0, 0, 0, 0.3) 50%,
       rgba(0, 0, 0, 0.1)
     );
+  }
+
+  .sidebar__user-info {
+    margin-bottom: 8px;
+  }
+
+  .sidebar__button {
+    margin: 0;
+  }
+
+  .sidebar__options {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    opacity: 0.6;
   }
 }

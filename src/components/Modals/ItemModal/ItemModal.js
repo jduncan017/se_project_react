@@ -1,16 +1,16 @@
+import { useContext } from "react";
 import useEscape from "../../../hooks/useEscape";
 import { CurrentUserContext } from "../../../contexts/CurrentUserContext";
 import "./ItemModal.css";
 
 const ItemModal = ({ onClose, selectedItem, confirmDelete }) => {
   useEscape(onClose);
-  console.log(selectedItem);
 
   // current user data definitions
-  const { currentUser } = CurrentUserContext;
-  const isOwn = selectedItem.owner === currentUser;
-  const itemDeleteButtonClassName = `item__delete-button ${
-    isOwn ? "item__delete-button_visible" : "item__delete-button_hidden"
+  const { currentUser } = useContext(CurrentUserContext);
+  const isOwn = selectedItem.owner === currentUser._id;
+  const deleteButtonClassName = `image-modal__delete ${
+    isOwn ? "image-modal__delete_visible" : "image-modal__delete_hidden"
   }`;
 
   return (
@@ -26,7 +26,7 @@ const ItemModal = ({ onClose, selectedItem, confirmDelete }) => {
           <h2 className="image-modal__title">{selectedItem.name}</h2>
           <button
             type="button"
-            className="image-modal__delete"
+            className={deleteButtonClassName}
             onClick={() => {
               onClose();
               confirmDelete();

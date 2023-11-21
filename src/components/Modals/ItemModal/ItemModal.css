@@ -40,6 +40,10 @@
   margin-right: 32px;
 }
 
+.image-modal__delete_hidden {
+  display: none;
+}
+
 .image-modal__description {
   margin: 12px 0 0 32px;
   font-family: "Cabinet Grotesk Medium", Arial, Helvetica, sans-serif;

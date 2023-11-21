@@ -1,22 +1,23 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
-import { Route, useLocation } from "react-router-dom";
+import { Route } from "react-router-dom";
 import Header from "../Header/Header";
 import Main from "../Main/Main";
-import ItemCard from "../ItemCard/ItemCard";
 import Footer from "../Footer/Footer";
 import ItemModal from "../Modals/ItemModal/ItemModal";
 import ToggleSwitch from "../ToggleSwitch/ToggleSwitch";
 import weatherApiRequest from "../../utils/weatherApi";
 import Profile from "../Profile/Profile";
-import ConfirmationModal from "../Modals/ConfirmationModal/ConfirmationModal";
-import AddItemModal from "../Modals/ItemModal/ItemModal";
+import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal/ConfirmDeleteModal";
+import AddItemModal from "../Modals/AddItemModal/AddItemModal";
 import SignUpModal from "../Modals/SignUpModal/SignUpModal";
 import LoginModal from "../Modals/LoginModal/LoginModal";
+import ConfirmLogoutModal from "../Modals/ConfirmLogoutModal/ConfirmLogoutModal";
+import EditProfileModal from "../Modals/EditProfileModal/EditProfileModal";
 import ProtectedRoute from "../../utils/ProtectedRoute";
 import { CurrentTemperatureUnitProvider } from "../../contexts/CurrentTemperatureUnitContext";
 import { AuthContext } from "../../contexts/AuthContext";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
-import api from "../../utils/api";
+import { api, addLike, removeLike } from "../../utils/api";
 import { signup, login } from "../../utils/auth";
 import "./App.css";
 
@@ -32,13 +33,11 @@ function App() {
   // weather states
   const [weatherData, setWeatherData] = useState({ name: "", temp: "" });
 
-  // clothing item states
+  // clothing item state
   const [allClothesList, setAllClothesList] = useState([]);
-  const [allClothingCards, setAllClothingCards] = useState([]);
 
   // constants
-  const location = useLocation();
-  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  const { setIsLoggedIn } = useContext(AuthContext);
   const { setCurrentUser, currentUser } = useContext(CurrentUserContext);
 
   // --------------------------------------- //
@@ -68,21 +67,6 @@ function App() {
     [toggleModal]
   );
 
-  const renderCardList = useCallback(
-    (clothingItems) => {
-      return clothingItems.map((item) => {
-        return (
-          <ItemCard
-            handleClick={handleCardClick(item)}
-            key={item._id}
-            clothingItem={item}
-          />
-        );
-      });
-    },
-    [handleCardClick]
-  );
-
   async function getUserInfo(authToken) {
     try {
       const userInfo = await api("GET", "user/me", authToken);
@@ -92,8 +76,10 @@ function App() {
     }
   }
 
+  /* --------------------------------------- */
+  /*       FUNCTIONS FOR USER ACTIONS        */
+  /* --------------------------------------- */
   async function handleLogin({ email, password }) {
-    console.log("logging in!");
     try {
       const config = login(email, password);
       const res = await api("AUTH", "signin", "", config);
@@ -101,7 +87,7 @@ function App() {
         localStorage.setItem("jwt", res.token);
         setCurrentModal(null);
         setIsLoggedIn(true);
-        const userInfo = getUserInfo(res.token);
+        const userInfo = await getUserInfo(res.token);
         setCurrentUser(userInfo);
       }
     } catch (error) {
@@ -120,13 +106,32 @@ function App() {
     }
   }
 
+  function handleLogout() {
+    setCurrentModal(null);
+    localStorage.removeItem("jwt");
+    setIsLoggedIn(false);
+  }
+
+  async function handleProfileUpdate({ name, avatar, email }) {
+    const token = localStorage.getItem("jwt");
+    const data = { name, avatar, email };
+    try {
+      const updatedInfo = await api("PATCH", "user/me", token, data);
+      setCurrentModal(null);
+      setCurrentUser(updatedInfo);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   async function handleAddItemSubmit(newItem) {
     const token = localStorage.getItem("jwt");
     try {
       setButtonDisplay("Saving...");
       await api("POST", "items", token, newItem);
-      toggleModal("add", "Add garment");
-      setAllClothesList([newItem, ...allClothesList]);
+      toggleModal("addItem");
+      const updatedClothesList = await api("GET", "items", token);
+      setAllClothesList(updatedClothesList);
     } catch (error) {
       setButtonDisplay("Server error, try again");
       console.error("Couldn't add the item:", error);
@@ -137,36 +142,49 @@ function App() {
     const token = localStorage.getItem("jwt");
     try {
       setButtonDisplay("Deleting...");
-      await api("DELETE", `items/${item.id}`, token, item);
+      await api("DELETE", `items/${item._id}`, token, item);
       toggleModal("confirm", "Yes, delete item");
-      setAllClothesList(
-        allClothesList.filter((items) => {
-          return items.id !== item.id;
-        })
-      );
+      const updatedClothesList = await api("GET", "items", token);
+      setAllClothesList(updatedClothesList);
     } catch (error) {
       setButtonDisplay("Server error, try again");
       console.error("Couldn't delete item:", error);
     }
   }
 
+  const handleLikeClick = async ({ cardId, isLiked }) => {
+    const token = localStorage.getItem("jwt");
+    try {
+      let updatedCard;
+      if (isLiked) {
+        updatedCard = await removeLike({ itemId: cardId }, token);
+      } else {
+        updatedCard = await addLike({ itemId: cardId }, token);
+      }
+      setAllClothesList((cards) =>
+        cards.map((card) => (card._id === updatedCard._id ? updatedCard : card))
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   // --------------------------------------- //
   //            -  USE EFFECTS -             //
   // --------------------------------------- //
-  // initial fetch of user clothes:
+  // fetch user clothes:
   useEffect(() => {
     const fetchUserClothes = async () => {
       const token = localStorage.getItem("jwt");
       try {
         const clothesList = await api("GET", "items", token);
-        const userClothesList = clothesList.filter((item) => {
-          return item.owner === currentUser._id;
-        });
-        setAllClothesList(userClothesList);
+        setAllClothesList(clothesList);
       } catch (error) {
         console.error(error);
       }
     };
+
+    fetchUserClothes();
   }, [currentUser]);
 
   // fetch weather data:
@@ -182,20 +200,6 @@ function App() {
     fetchWeather();
   }, []);
 
-  // update allClothingItems, setAllClothingItems List
-  useEffect(() => {
-    setAllClothingCards(renderCardList(allClothesList));
-  }, [allClothesList, renderCardList]);
-
-  // opens login modal uppon redirect for unAuth'd users
-  useEffect(() => {
-    if ((location.pathname === "/home/login") & !isLoggedIn) {
-      setCurrentModal("login");
-    } else {
-      setCurrentModal(null);
-    }
-  }, [location, isLoggedIn]);
-
   // checks for jwt token and validates with server
   useEffect(() => {
     const token = localStorage.getItem("jwt");
@@ -205,8 +209,6 @@ function App() {
           userData.avatar = null ? userData.name[0] : userData.avatar;
           setCurrentUser(userData);
           setIsLoggedIn(true);
-          // ! Delete
-          console.log("CurrentUser:", userData);
         })
         .catch((error) => {
           console.error("Token validation failed:", error);
@@ -231,31 +233,34 @@ function App() {
           ToggleSwitch={<ToggleSwitch />}
           weatherData={weatherData}
         />
-
         <Route path="/home">
           <Main
             weatherData={weatherData}
             allClothesList={allClothesList}
             // CARDS LIST:
             handleCardClick={handleCardClick}
+            onCardLike={handleLikeClick}
           />
         </Route>
         <ProtectedRoute path="/profile">
           <Profile
             // CARDS LIST:
-            cardsList={allClothingCards}
-            handleClick={() => toggleModal()}
+            allClothesList={allClothesList}
+            handleAddClick={() => toggleModal("addItem")}
+            handleLogoutClick={() => toggleModal("logout", "Log Out")}
+            handleEditProfileClick={() => toggleModal("edit profile")}
+            handleCardClick={handleCardClick}
+            onCardLike={handleLikeClick}
           />
         </ProtectedRoute>
-
         {/* --------------------------------------- */
         /*                 MODALS                  */
         /* --------------------------------------- */}
         {/* ADD CLOTHES MODAL */}
-        {currentModal === "add" && (
+        {currentModal === "addItem" && (
           <AddItemModal
-            onClose={() => toggleModal("add")}
-            isOpen={currentModal === "add"}
+            onClose={() => toggleModal("addItem")}
+            isOpen={currentModal === "addItem"}
             handleAddItems={handleAddItemSubmit}
             buttonDisplay={buttonDisplay}
           />
@@ -272,8 +277,8 @@ function App() {
 
         {/* MODAL FOR CONFIRMING CLOTHING DELETION */}
         {currentModal === "confirm" && (
-          <ConfirmationModal
-            onClose={() => toggleModal("confirm")}
+          <ConfirmDeleteModal
+            onClose={toggleModal}
             handleDelete={handleDeleteItemConfirm}
             selectedItem={selectedItem}
             buttonDisplay={buttonDisplay}
@@ -301,8 +306,25 @@ function App() {
             handleClick={toggleModal}
           />
         )}
-        {/* MAIN */}
 
+        {/* MODAL FOR EDITING USER PROFILE INFO */}
+        {currentModal === "edit profile" && (
+          <EditProfileModal
+            onClose={() => toggleModal("edit profile")}
+            isOpen={currentModal === "edit profile"}
+            handleProfileUpdate={handleProfileUpdate}
+          />
+        )}
+
+        {/* MODAL FOR CONFIRMING LOGOUT */}
+        {currentModal === "logout" && (
+          <ConfirmLogoutModal
+            onClose={toggleModal}
+            handleLogout={handleLogout}
+            buttonDisplay={buttonDisplay}
+          />
+        )}
+        {/* MAIN */}
         {/* FOOTER */}
         <Footer />
       </CurrentTemperatureUnitProvider>

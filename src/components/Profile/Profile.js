@@ -2,11 +2,26 @@ import SideBar from "../SideBar/SideBar";
 import ClothesSection from "../ClothesSection/ClothesSection";
 import "./Profile.css";
 
-const Profile = ({ cardsList, handleClick }) => {
+const Profile = ({
+  allClothesList,
+  handleAddClick,
+  handleLogoutClick,
+  handleEditProfileClick,
+  handleCardClick,
+  onCardLike,
+}) => {
   return (
     <div className="profile">
-      <SideBar />
-      <ClothesSection cardsList={cardsList} handleClick={handleClick("Add")} />
+      <SideBar
+        handleLogoutClick={handleLogoutClick}
+        handleEditProfileClick={handleEditProfileClick}
+      />
+      <ClothesSection
+        allClothesList={allClothesList}
+        handleAddClick={handleAddClick}
+        handleCardClick={handleCardClick}
+        onCardLike={onCardLike}
+      />
     </div>
   );
 };

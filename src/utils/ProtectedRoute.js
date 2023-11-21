@@ -6,7 +6,7 @@ function ProtectedRoute({ children, ...props }) {
   const { isLoggedIn } = useContext(AuthContext);
   return (
     <Route {...props}>
-      {isLoggedIn ? children : <Redirect to={"/home/login"} />}
+      {isLoggedIn ? children : <Redirect to={"/home"} />}
     </Route>
   );
 }

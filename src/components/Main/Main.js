@@ -4,13 +4,15 @@ import "./Main.css";
 import { CurrentTemperatureUnitContext } from "../../contexts/CurrentTemperatureUnitContext";
 import WeatherCard from "../WeatherCard/WeatherCard";
 
-const Main = ({ weatherData, allClothesList, handleCardClick }) => {
+const Main = ({ weatherData, allClothesList, handleCardClick, onCardLike }) => {
   const { currentTemperatureUnit } = useContext(CurrentTemperatureUnitContext);
-  const temperature = weatherData.temp.currentTemperatureUnit;
+  const temperature = weatherData.temp[currentTemperatureUnit];
 
-  const filteredList = allClothesList.filter((item) => {
-    return item.weather === weatherData.tempCategory;
-  });
+  const filteredList = allClothesList
+    .filter((item) => {
+      return item.weather === weatherData.tempCategory;
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <main className="main">
@@ -22,9 +24,10 @@ const Main = ({ weatherData, allClothesList, handleCardClick }) => {
         {filteredList.map((item) => {
           return (
             <ItemCard
+              key={item._id}
               handleClick={handleCardClick(item)}
               clothingItem={item}
-              key={item.id}
+              onCardLike={onCardLike}
             />
           );
         })}

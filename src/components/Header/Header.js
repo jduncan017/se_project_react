@@ -19,12 +19,13 @@ function getCurrentDate() {
 
 const Header = ({ handleClick, weatherData }) => {
   const [isMobileMenuOpened, setMobileMenuOpened] = useState(false);
+  const [username, setUsername] = useState("P R");
   const { isLoggedIn } = useContext(AuthContext);
   const { currentUser } = useContext(CurrentUserContext);
 
-  useEffect((currentUser) => {
-    const userName = currentUser ? currentUser : "P R";
-  });
+  useEffect(() => {
+    setUsername(currentUser ? currentUser.name : "P R");
+  }, [currentUser]);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpened(!isMobileMenuOpened);
@@ -37,7 +38,7 @@ const Header = ({ handleClick, weatherData }) => {
           isMobileMenuOpened ? "header__button" : ""
         }`}
         onClick={() => {
-          handleClick("add");
+          handleClick("addItem");
           setMobileMenuOpened(false);
         }}
       >
@@ -59,7 +60,7 @@ const Header = ({ handleClick, weatherData }) => {
             isMobileMenuOpened ? "header__user-info-container_opened" : ""
           }`}
         >
-          <div className="header__username">{currentUser.name}</div>
+          <div className="header__username">{username}</div>
           <div className="header__image-container">
             {currentUser.avatar ? (
               <img
@@ -68,7 +69,7 @@ const Header = ({ handleClick, weatherData }) => {
                 className="header__user-avatar"
               ></img>
             ) : (
-              getInitials(currentUser.name)
+              getInitials(username)
             )}
           </div>
         </div>

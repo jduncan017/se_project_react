@@ -26,5 +26,8 @@ Dig into the Github Codebase for all the geeky details of the project.
 **TODO**
 
 - Add a default clothing example for when a user first signs up
-- Update itemModal to remove the x if the user Id doesn't match the owner id.
--
+- Verify Password by asking user to enter it twice for signup and update profile
+- Display server errors like "invalid username & password" or "username already exists" in modals
+- Move the header profile section to sidebar in profile view
+- Add the ability to edit clothes
+- Add the ability to select more than one temperature for cltohing Items

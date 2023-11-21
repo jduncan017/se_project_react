@@ -3,7 +3,7 @@ import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import getInitials from "../../utils/getInitials";
 import "./SideBar.css";
 
-const SideBar = () => {
+const SideBar = ({ handleLogoutClick, handleEditProfileClick }) => {
   const { currentUser } = useContext(CurrentUserContext);
 
   return (
@@ -20,14 +20,26 @@ const SideBar = () => {
             getInitials(currentUser.name)
           )}
         </div>
-        <h3 className="sidebar__username">User Profile</h3>
+        <h3 className="sidebar__username">
+          {currentUser ? currentUser.name : "User Profile"}
+        </h3>
       </div>
-      <button className="sidebar__button" type="button">
-        Change Profile Data
-      </button>
-      <button className="sidebar__button" type="button">
-        Log Out
-      </button>
+      <div className="sidebar__options">
+        <button
+          className="sidebar__button"
+          type="button"
+          onClick={handleEditProfileClick}
+        >
+          Change Profile Data
+        </button>
+        <button
+          className="sidebar__button"
+          type="button"
+          onClick={handleLogoutClick}
+        >
+          Log Out
+        </button>
+      </div>
     </div>
   );
 };

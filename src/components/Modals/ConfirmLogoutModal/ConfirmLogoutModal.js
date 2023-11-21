@@ -1,29 +1,21 @@
 import React from "react";
-import "./ConfirmationModal.css";
+import "./ConfirmLogoutModal.css";
 import useEscape from "../../../hooks/useEscape";
 
-const ConfirmationModal = ({
-  onClose,
-  handleDelete,
-  selectedItem,
-  buttonDisplay,
-}) => {
+const ConfirmDelete = ({ onClose, handleLogout, buttonDisplay }) => {
   useEscape(onClose);
   return (
     <div className="modal confirmation-modal">
       <div className="modal__overlay" onClick={onClose}></div>
       <div className="confirmation-modal__container">
         <h2 className="confirmation-modal__query">
-          Are you sure you want to delete this item?
-        </h2>
-        <h2 className="confirmation-modal__warning">
-          This action is irreversible.
+          Are you sure you want to log out?
         </h2>
         <button
           type="button"
           className="confirmation-modal__delete"
           onClick={() => {
-            handleDelete(selectedItem);
+            handleLogout();
           }}
         >
           {buttonDisplay}
@@ -45,4 +37,4 @@ const ConfirmationModal = ({
   );
 };
 
-export default ConfirmationModal;
+export default ConfirmDelete;

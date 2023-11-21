@@ -1,4 +1,6 @@
 import useEscape from "../../../hooks/useEscape";
+import { useContext } from "react";
+import { ServerResponseContext } from "../../../contexts/ServerResponseContext";
 import "./ModalWithForm.css";
 const ModalWithForm = ({
   onClose,
@@ -9,12 +11,18 @@ const ModalWithForm = ({
   extraButtons,
 }) => {
   useEscape(onClose);
+  const { serverResponse } = useContext(ServerResponseContext);
 
   return (
     <div className="modal" id="add-clothes-modal">
       <div className="modal__overlay" onClick={onClose} />
       <div className="modal-with-form__container">
-        <h1 className="modal-with-form__title">{formInfo.title}</h1>
+        <div className="modal-with-form__title-error_container">
+          <h1 className="modal-with-form__title">{formInfo.title}</h1>
+          <span className="form-modal__error modal-with-form__server-error">
+            {serverResponse || ""}
+          </span>
+        </div>
         <button
           className="modal__close-button"
           type="button"

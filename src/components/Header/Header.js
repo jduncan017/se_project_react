@@ -44,7 +44,7 @@ const Header = ({ handleClick, weatherData }) => {
       >
         + Add Clothes
       </button>
-      <Link to="/home">
+      <Link to="/">
         <button className="header__button" type="button">
           Home
         </button>
@@ -107,7 +107,7 @@ const Header = ({ handleClick, weatherData }) => {
   return (
     <header className="header">
       <div className="header__title-container">
-        <Link to="/home">
+        <Link to="/">
           <img src={logoPath} alt="wtwr Logo" className="header__logo" />
         </Link>
         <div className="header__date-location">

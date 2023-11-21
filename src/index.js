@@ -6,17 +6,20 @@ import reportWebVitals from "./reportWebVitals";
 import { HashRouter, Switch } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { CurrentUserProvider } from "./contexts/CurrentUserContext";
+import { ServerResponseProvider } from "./contexts/ServerResponseContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <HashRouter>
       <Switch>
-        <AuthProvider>
-          <CurrentUserProvider>
-            <App />
-          </CurrentUserProvider>
-        </AuthProvider>
+        <ServerResponseProvider>
+          <AuthProvider>
+            <CurrentUserProvider>
+              <App />
+            </CurrentUserProvider>
+          </AuthProvider>
+        </ServerResponseProvider>
       </Switch>
     </HashRouter>
   </React.StrictMode>

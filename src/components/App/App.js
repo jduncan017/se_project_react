@@ -14,7 +14,8 @@ import LoginModal from "../Modals/LoginModal/LoginModal";
 import ConfirmLogoutModal from "../Modals/ConfirmLogoutModal/ConfirmLogoutModal";
 import EditProfileModal from "../Modals/EditProfileModal/EditProfileModal";
 import ProtectedRoute from "../../utils/ProtectedRoute";
-import { CurrentTemperatureUnitProvider } from "../../contexts/CurrentTemperatureUnitContext";
+import { ServerResponseContext } from "../../contexts/ServerResponseContext";
+import { CurrentTemperatureUnitContext } from "../../contexts/CurrentTemperatureUnitContext";
 import { AuthContext } from "../../contexts/AuthContext";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import { api, addLike, removeLike } from "../../utils/api";
@@ -32,13 +33,15 @@ function App() {
 
   // weather states
   const [weatherData, setWeatherData] = useState({ name: "", temp: "" });
+  const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState("F");
 
   // clothing item state
   const [allClothesList, setAllClothesList] = useState([]);
 
-  // constants
+  // contexts
   const { setIsLoggedIn } = useContext(AuthContext);
   const { setCurrentUser, currentUser } = useContext(CurrentUserContext);
+  const { setServerResponse } = useContext(ServerResponseContext);
 
   // --------------------------------------- //
   //        - FUNCTION DECLARATIONS -        //
@@ -50,6 +53,7 @@ function App() {
         setCurrentModal(null);
       } else {
         setCurrentModal(modalName);
+        setServerResponse("");
         setButtonDisplay(buttonDisplay);
       }
       return additionalText;
@@ -76,6 +80,9 @@ function App() {
     }
   }
 
+  function handleToggleSwitchChange() {
+    setCurrentTemperatureUnit(currentTemperatureUnit === "F" ? "C" : "F");
+  }
   /* --------------------------------------- */
   /*       FUNCTIONS FOR USER ACTIONS        */
   /* --------------------------------------- */
@@ -92,6 +99,7 @@ function App() {
       }
     } catch (error) {
       console.error(error);
+      setServerResponse(error.message);
     }
   }
 
@@ -103,6 +111,7 @@ function App() {
       setAllClothesList();
     } catch (error) {
       console.error(error);
+      setServerResponse(error.message);
     }
   }
 
@@ -226,14 +235,17 @@ function App() {
       {/* --------------------------------------- */
       /*                  ROUTES                 */
       /* --------------------------------------- */}
-      <CurrentTemperatureUnitProvider>
+      <CurrentTemperatureUnitContext.Provider
+        value={{ currentTemperatureUnit, handleToggleSwitchChange }}
+      >
         {/* HEADER */}
         <Header
+          path="/"
           handleClick={toggleModal}
           ToggleSwitch={<ToggleSwitch />}
           weatherData={weatherData}
         />
-        <Route path="/home">
+        <Route exact path="/">
           <Main
             weatherData={weatherData}
             allClothesList={allClothesList}
@@ -327,7 +339,7 @@ function App() {
         {/* MAIN */}
         {/* FOOTER */}
         <Footer />
-      </CurrentTemperatureUnitProvider>
+      </CurrentTemperatureUnitContext.Provider>
     </div>
   );
 }

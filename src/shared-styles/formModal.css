@@ -32,7 +32,6 @@
   color: #ff0000;
   align-self: flex-start;
   margin: 5px 0 3px;
-  /* visibility: hidden; */
 }
 
 @media screen and (min-width: 320px) and (max-width: 510px) {

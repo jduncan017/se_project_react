@@ -43,12 +43,13 @@ const api = async (method, path, authToken = null, data = null) => {
 
   try {
     const res = await fetch(`${baseUrl}/${path}`, options);
+    const response = await res.json();
 
     if (!res.ok) {
-      throw new Error(`Oops there's an error!: ${res.status}`);
+      throw new Error(response.message || "Unknown error occured");
     }
 
-    return await res.json();
+    return response;
   } catch (error) {
     console.error(error);
     throw error;

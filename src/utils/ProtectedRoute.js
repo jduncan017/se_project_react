@@ -5,9 +5,7 @@ import { AuthContext } from "../contexts/AuthContext";
 function ProtectedRoute({ children, ...props }) {
   const { isLoggedIn } = useContext(AuthContext);
   return (
-    <Route {...props}>
-      {isLoggedIn ? children : <Redirect to={"/home"} />}
-    </Route>
+    <Route {...props}>{isLoggedIn ? children : <Redirect to={"/"} />}</Route>
   );
 }
 

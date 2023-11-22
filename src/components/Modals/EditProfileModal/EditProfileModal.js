@@ -35,12 +35,18 @@ const EditProfileModal = ({ onClose, isOpen, handleProfileUpdate }) => {
   }
 
   useEffect(() => {
-    resetForm({
-      name: currentUser.name,
-      email: currentUser.email,
-      avatar: currentUser.avatar,
-    });
-  }, [isOpen, resetForm, currentUser]);
+    if (isOpen && currentUser) {
+      resetForm(
+        {
+          name: currentUser.name || "",
+          email: currentUser.email || "",
+          avatar: currentUser.avatar || "",
+        },
+        {},
+        true
+      );
+    }
+  }, [isOpen, currentUser, resetForm]);
 
   return (
     <ModalWithForm
@@ -67,7 +73,7 @@ const EditProfileModal = ({ onClose, isOpen, handleProfileUpdate }) => {
       <span className="form-modal__error" id="name-error">
         {errors.name || ""}
       </span>
-      <label className="form-modal__form-label" htmlFor="name">
+      <label className="form-modal__form-label" htmlFor="email">
         Email
       </label>
       <input

@@ -1,4 +1,5 @@
 import { apiKey, locationData, images } from "./contants";
+import { api } from "./api";
 
 function setTempCategory(tempFarenheit) {
   if (tempFarenheit >= 75) {
@@ -69,15 +70,12 @@ function extractWeatherData(data) {
 }
 
 async function weatherApiRequest() {
-  const response = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?lat=${locationData.latitude}&lon=${locationData.longitude}&units=imperial&appid=${apiKey}`
-  );
-
-  if (response.ok) {
-    const data = await response.json();
-    return extractWeatherData(data);
-  } else {
-    throw new Error(`Error ${response.status}`);
+  try {
+    const path = `data/2.5/weather?lat=${locationData.latitude}&lon=${locationData.longitude}&units=imperial&appid=${apiKey}`;
+    const res = await api("WEATHER", path);
+    return extractWeatherData(res);
+  } catch (error) {
+    throw new Error(`Error ${error.status}`);
   }
 }
 

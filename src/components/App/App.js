@@ -19,6 +19,7 @@ import { Route } from "react-router-dom";
 // Contexts
 import { CurrentTemperatureUnitContext } from "../../contexts/CurrentTemperatureUnitContext";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
+import { ServerResponseContext } from "../../contexts/ServerResponseContext";
 
 //Components
 import Header from "../Header/Header";
@@ -62,6 +63,7 @@ function App() {
 
   // contexts
   const { setCurrentUser, currentUser } = useContext(CurrentUserContext);
+  const { setServerResponse } = useContext(ServerResponseContext);
 
   // Custom Hooks
   const {
@@ -92,6 +94,11 @@ function App() {
   /* --------------------------------------- */
   /*       FUNCTIONS FOR USER ACTIONS        */
   /* --------------------------------------- */
+  function errorCatch(errorText, error) {
+    setServerResponse("Server error, try again");
+    console.error(errorText, error);
+  }
+
   async function handleProfileUpdate({ name, avatar, email }) {
     const token = localStorage.getItem("jwt");
     const data = { name, avatar, email };
@@ -100,7 +107,7 @@ function App() {
       setCurrentModal(null);
       setCurrentUser(updatedInfo);
     } catch (error) {
-      console.error(error);
+      errorCatch("Couldn't update profile", error);
     }
   }
 
@@ -109,11 +116,10 @@ function App() {
     try {
       setButtonDisplay("Saving...");
       const addedItem = await api("POST", "items", token, newItem);
-      toggleModal("addItem");
       setAllClothesList((clothes) => [addedItem, ...clothes]);
+      setCurrentModal(null);
     } catch (error) {
-      setButtonDisplay("Server error, try again");
-      console.error("Couldn't add the item:", error);
+      errorCatch("Couldn't add the item", error);
     }
   }
 
@@ -122,15 +128,14 @@ function App() {
     try {
       setButtonDisplay("Deleting...");
       await api("DELETE", `items/${item._id}`, token, item);
-      toggleModal("confirm", "Yes, delete item");
+      setCurrentModal(null);
       const updatedList = (prevAllClothesList) =>
         prevAllClothesList.filter(
           (clothesItem) => clothesItem._id !== item._id
         );
       setAllClothesList(updatedList);
     } catch (error) {
-      setButtonDisplay("Server error, try again");
-      console.error("Couldn't delete item:", error);
+      errorCatch("Couldn't delete item", error);
     }
   }
 
@@ -146,8 +151,8 @@ function App() {
       setAllClothesList((cards) =>
         cards.map((card) => (card._id === updatedCard._id ? updatedCard : card))
       );
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.error(error);
     }
   };
 

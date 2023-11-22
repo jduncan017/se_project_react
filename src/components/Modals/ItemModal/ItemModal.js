@@ -28,7 +28,6 @@ const ItemModal = ({ onClose, selectedItem, confirmDelete }) => {
             type="button"
             className={deleteButtonClassName}
             onClick={() => {
-              onClose();
               confirmDelete();
             }}
           >

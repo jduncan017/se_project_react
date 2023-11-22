@@ -1,5 +1,5 @@
 const api = async (method, path, authToken = null, data = null) => {
-  const baseUrl =
+  let baseUrl =
     // "https://my-json-server.typicode.com/jduncan017/se_project_react";
     "http://localhost:3001";
   let options;
@@ -36,6 +36,10 @@ const api = async (method, path, authToken = null, data = null) => {
       break;
     case "AUTH":
       options = data;
+      break;
+    case "WEATHER":
+      options = data;
+      baseUrl = "https://api.openweathermap.org/";
       break;
     default:
       throw new Error(`Method not supported: ${method}`);

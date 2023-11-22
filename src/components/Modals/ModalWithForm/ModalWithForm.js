@@ -14,7 +14,7 @@ const ModalWithForm = ({
   const { serverResponse } = useContext(ServerResponseContext);
 
   return (
-    <div className="modal" id="add-clothes-modal">
+    <div className="modal">
       <div className="modal__overlay" onClick={onClose} />
       <div className="modal-with-form__container">
         <div className="modal-with-form__title-error_container">

@@ -1,14 +1,3 @@
-// ! Please See Notes Below:
-
-/* Thank you for your feedback, I just had a few concerns / questions:
-
-1) I'm unable to recreate the issure with the modal not selecting the correct input, is this still an issue?
-2) auth.js is still being used, it's just imported into useAuth.js (a custom hook) that I'm using to manager auth logic.
-3) All api functions are help in api.js, I'm just making api calls from App.js and passing parameters. Is this not what
-I'm supposed to do?
-
-*/
-
 /* --------------------------------------- */
 /*                 IMPORTS                 */
 /* --------------------------------------- */

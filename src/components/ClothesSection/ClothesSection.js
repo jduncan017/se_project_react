@@ -10,9 +10,9 @@ const ClothesSection = ({
   onCardLike,
 }) => {
   const { currentUser } = useContext(CurrentUserContext);
-  const userCardsList = allClothesList
-    .filter((item) => item.owner === currentUser._id)
-    .sort((a, b) => a.name.localeCompare(b.name));
+  const userCardsList = allClothesList.filter(
+    (item) => item.owner === currentUser._id
+  );
 
   return (
     <div className="clothes-section">

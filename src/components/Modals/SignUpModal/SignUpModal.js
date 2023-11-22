@@ -44,7 +44,7 @@ const SignUpModal = ({ onClose, isOpen, handleSignup, handleClick }) => {
       buttonState={isValid}
       extraButtons={loginButton}
     >
-      <label className="form-modal__form-label" htmlFor="name">
+      <label className="form-modal__form-label" htmlFor="email">
         Email*
       </label>
       <input
@@ -62,7 +62,7 @@ const SignUpModal = ({ onClose, isOpen, handleSignup, handleClick }) => {
       <span className="form-modal__error" id="name-error">
         {errors.email || ""}
       </span>
-      <label className="form-modal__form-label" htmlFor="name">
+      <label className="form-modal__form-label" htmlFor="password">
         Password*
       </label>
       <input

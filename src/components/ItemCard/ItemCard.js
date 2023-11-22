@@ -15,23 +15,25 @@ const ItemCard = ({ handleClick, clothingItem, onCardLike }) => {
 
   return (
     <div className="card__container">
-      <h2 className="card__title">{clothingItem.name}</h2>
+      <div className="card__title-container">
+        <h2 className="card__title">{clothingItem.name}</h2>
+        <img
+          className={likeButtonClassName}
+          src={isLiked ? likedButton : unlikedButton}
+          alt="like button"
+          onClick={() =>
+            onCardLike({
+              cardId: clothingItem._id,
+              isLiked: isLiked,
+            })
+          }
+        ></img>
+      </div>
       <img
         src={clothingItem.imageUrl}
         alt={clothingItem.name}
         className="card__image"
         onClick={handleClick}
-      ></img>
-      <img
-        className={likeButtonClassName}
-        src={isLiked ? likedButton : unlikedButton}
-        alt="like button"
-        onClick={() =>
-          onCardLike({
-            cardId: clothingItem._id,
-            isLiked: isLiked,
-          })
-        }
       ></img>
     </div>
   );

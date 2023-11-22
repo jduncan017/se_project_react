@@ -7,10 +7,17 @@
   border-radius: 20px;
 }
 
-.card__title {
+.card__title-container {
+  display: flex;
   position: absolute;
   margin: 0;
   top: 16px;
+  gap: 4px;
+  align-items: center;
+}
+
+.card__title {
+  margin: 0;
   padding: 2px 12px;
   border-radius: 4px;
   background: #fff;
@@ -32,9 +39,6 @@
 .card__like-button {
   width: 18px;
   height: 15px;
-  position: absolute;
-  right: 20px;
-  bottom: 12px;
   cursor: pointer;
 }
 

@@ -35,8 +35,12 @@ const EditProfileModal = ({ onClose, isOpen, handleProfileUpdate }) => {
   }
 
   useEffect(() => {
-    resetForm();
-  }, [isOpen, resetForm]);
+    resetForm({
+      name: currentUser.name,
+      email: currentUser.email,
+      avatar: currentUser.avatar,
+    });
+  }, [isOpen, resetForm, currentUser]);
 
   return (
     <ModalWithForm
@@ -54,11 +58,11 @@ const EditProfileModal = ({ onClose, isOpen, handleProfileUpdate }) => {
         type="text"
         id="name"
         name="name"
-        placeholder={currentUser.name}
+        placeholder={"Name"}
         minLength="1"
         maxLength="30"
         onChange={handleChange}
-        value={values.name || ""}
+        value={values.name}
       />
       <span className="form-modal__error" id="name-error">
         {errors.name || ""}
@@ -71,11 +75,11 @@ const EditProfileModal = ({ onClose, isOpen, handleProfileUpdate }) => {
         type="email"
         id="email"
         name="email"
-        placeholder={currentUser.email}
+        placeholder={"Email"}
         minLength="1"
         maxLength="30"
         onChange={handleChange}
-        value={values.email || ""}
+        value={values.email}
       />
       <span className="form-modal__error" id="name-error">
         {errors.email || ""}
@@ -87,10 +91,10 @@ const EditProfileModal = ({ onClose, isOpen, handleProfileUpdate }) => {
         className="form-modal__form-input"
         id="link"
         name="avatar"
-        placeholder={currentUser.avatar || "Image Link"}
+        placeholder={"Image Link"}
         type="url"
         onChange={handleChange}
-        value={values.avatar || ""}
+        value={values.avatar}
       />
       <span className="form-modal__error" id="link-error">
         {errors.avatar || ""}

@@ -26,7 +26,7 @@ import EditProfileModal from "../Modals/EditProfileModal/EditProfileModal";
 // Utilities
 import { api, addLike, removeLike } from "../../utils/api";
 import weatherApiRequest from "../../utils/weatherApi";
-import ProtectedRoute from "../../utils/ProtectedRoute";
+import ProtectedRoute from "../ProtectedRoute";
 
 // Hooks
 import useAuth from "../../hooks/useAuth";
@@ -97,10 +97,9 @@ function App() {
     const token = localStorage.getItem("jwt");
     try {
       setButtonDisplay("Saving...");
-      await api("POST", "items", token, newItem);
+      const addedItem = await api("POST", "items", token, newItem);
       toggleModal("addItem");
-      const updatedClothesList = await api("GET", "items", token);
-      setAllClothesList(updatedClothesList);
+      setAllClothesList((clothes) => [addedItem, ...clothes]);
     } catch (error) {
       setButtonDisplay("Server error, try again");
       console.error("Couldn't add the item:", error);
@@ -113,8 +112,11 @@ function App() {
       setButtonDisplay("Deleting...");
       await api("DELETE", `items/${item._id}`, token, item);
       toggleModal("confirm", "Yes, delete item");
-      const updatedClothesList = await api("GET", "items", token);
-      setAllClothesList(updatedClothesList);
+      const updatedList = (prevAllClothesList) =>
+        prevAllClothesList.filter(
+          (clothesItem) => clothesItem._id !== item._id
+        );
+      setAllClothesList(updatedList);
     } catch (error) {
       setButtonDisplay("Server error, try again");
       console.error("Couldn't delete item:", error);

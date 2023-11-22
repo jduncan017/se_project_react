@@ -19,6 +19,9 @@ What to Wear (WTWR) is a front-end web application that helps users decide on th
 - Move the header profile section to sidebar in profile view
 - Add the ability to edit clothes
 - Add the ability to select more than one temperature for cltohing Items
+- Create a new Modal Component that encompasses all if not most modals
+  - This Modal can change content based on the type of modal needed using a switch block
+  - Move modal logic to a context that can be accessed from components, rather than using prop drilling
 
 **Project Preview**  
 [Live Site](https://jduncan017.github.io/se_project_react/)

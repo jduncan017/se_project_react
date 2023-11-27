@@ -1,7 +1,7 @@
 const api = async (method, path, authToken = null, data = null) => {
   let baseUrl =
     process.env.NODE_ENV === "production"
-      ? "api.wtwr.blinklab.com"
+      ? "https://api.wtwr.blinklab.com"
       : "http://localhost:3001";
   let options;
 

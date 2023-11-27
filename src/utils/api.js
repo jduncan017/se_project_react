@@ -1,7 +1,8 @@
 const api = async (method, path, authToken = null, data = null) => {
   let baseUrl =
-    // "https://my-json-server.typicode.com/jduncan017/se_project_react";
-    "http://localhost:3001";
+    process.env.NODE_ENV === "production"
+      ? "api.wtwr.blinklab.com"
+      : "http://localhost:3001";
   let options;
 
   switch (method) {

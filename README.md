@@ -24,7 +24,7 @@ What to Wear (WTWR) is a front-end web application that helps users decide on th
   - Move modal logic to a context that can be accessed from components, rather than using prop drilling
 
 **Project Preview**  
-[Live Site](https://jduncan017.github.io/se_project_react/)
+[Live Site](https://www.wtwr.blinklab.com)
 [Live Server](https://github.com/jduncan017/se_project_express)
 
 **Codebase**  

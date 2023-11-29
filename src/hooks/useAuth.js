@@ -49,7 +49,7 @@ const useAuth = (toggleModal) => {
   const fetchUserInfo = useCallback(
     async (token) => {
       try {
-        const userInfo = await api("GET", "user/me", token);
+        const userInfo = await api("GET", "users/me", token);
         setCurrentUser(userInfo);
       } catch (error) {
         console.error("Can't access user", error);

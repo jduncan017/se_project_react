@@ -92,7 +92,7 @@ function App() {
     const token = localStorage.getItem("jwt");
     const data = { name, avatar, email };
     try {
-      const updatedInfo = await api("PATCH", "user/me", token, data);
+      const updatedInfo = await api("PATCH", "users/me", token, data);
       setCurrentModal(null);
       setCurrentUser(updatedInfo);
     } catch (error) {

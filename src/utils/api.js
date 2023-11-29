@@ -47,6 +47,7 @@ const api = async (method, path, authToken = null, data = null) => {
   }
 
   try {
+    console.log(path, options);
     const res = await fetch(`${baseUrl}/${path}`, options);
     const response = await res.json();
 
